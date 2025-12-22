@@ -5,7 +5,7 @@
 TITLE = inputDemo.txt
 
 ! ---------------- RESULT_FOLDER-------------------------------
-RESULT_FOLDER = ./Results/
+RESULT_FOLDER = ./OUTPUT/
 
 ! --------------------DIMENSION---------------------------------
 ! cell numbers
@@ -355,6 +355,7 @@ Plastic_Visc = 0.0
 ! output variables at stations which are given in file stat.txt
 ! in form of x,y,z, where z=-1.0 outputs velocity of all layers
 NSTAT = 200
+STATIONS_FILE = ./INPUT/stat.txt
 ! PLOT_INTV_STAT = 0.01
 PLOT_INTV_STAT = 0.0
 ! -----------------------OUTPUT-------------------------------

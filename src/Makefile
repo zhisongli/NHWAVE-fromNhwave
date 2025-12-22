@@ -1,7 +1,7 @@
 #-----------BEGIN MAKEFILE-------------------------------------------------
          SHELL         = /bin/sh
          DEF_FLAGS     = -P -F -C -traditional 
-         EXEC          = nhwaveSolitaryLikeWave
+         EXEC          = nhwaveSolitaryLikeWaveNew
 #==========================================================================
 #--------------------------------------------------------------------------
 #        PRECISION          DEFAULT PRECISION: SINGLE                     
