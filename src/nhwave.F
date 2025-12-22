@@ -5565,10 +5565,48 @@
      if(WaveMaker(1:7)=='FLUX_LR') then
        call flux_left_right_boundary
      endif
-
+       
+!------------ added by HU, 20220308      
+     if(WaveMaker(1:7)=='FLOW_LE') then
+       call flow_discharge_left
+     endif
+!------------
+       
      end subroutine update_wave_bc 
 
+     subroutine flow_discharge_left
+!-----------------------------------------------------------   
+!    This subroutine is used to specify the flow discharge 
+!                                    at left boundary                                         
+!    Called by 
+!       update_wave_bc 
+!    Last update: 08/03/2022, Lihan Hu
+!-----------------------------------------------------------
+     use global
+     implicit none
+     integer :: j,k,n
+     real(SP) :: Zlev1,Zlev2,Uavg_Left,Ufric,sintep,UU,  &
+                 FluxL,myvar,Ramp,Cg
+# if defined (SEDIMENT)
+     real(SP) :: Sinterp
+     real(SP) :: Tim0(8),Cin0(8)
+# endif
+     Uavg_Left = 0.115
 
+     FluxL = 0.0
+
+     if(TRamp>0.0) then
+       Ramp = tanh(TIME/TRamp)
+     else
+       Ramp = 1.0
+     endif
+       
+       
+       
+     return
+     end subroutine flow_discharge_left
+       
+       
      subroutine flux_left_right_boundary
 !-----------------------------------------------------------   
 !    This subroutine is used to specify left/right boundary                                         
@@ -7138,10 +7176,14 @@ endif
      enddo
      enddo
      enddo
-     !!just 2d later should be deleted
-     !Diffxy = zero
-     !Diffyx = zero; Diffyy = zero; Diffyz = zero
-     !Diffzy = zero 
+!-added by HU, 202107-------------------------------
+     !just 2d later should be deleted
+     if (Nglob == 1) then       
+     Diffxy = zero
+     Diffyx = zero; Diffyy = zero; Diffyz = zero
+     Diffzy = zero 
+     endif
+!-----------------------------------------------
     end subroutine diffusion
 
      subroutine diffusion_old
