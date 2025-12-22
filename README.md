@@ -1,130 +1,86 @@
-# NHWAVE
-NHWAVE Developer Group and Software Distribution
+﻿
+# `NHWAVE-fromNhwave` Update Records
 
-Purpose:
+---
+## 1. Information of this repository
 
-     Manage code modifications and updates for NHWAVE, and provide code access to end users.
-     
-Development team members:
+| Column A       | Column B                  |
+|------------------|---------------------------------------------|
+| Author       | **Dr. Zhisong Li**           |
+| Email        | lizhisong@sjtu.edu.cn, lizhisongsjtu@163.com |
+| Original repository  | `https://github.com/NHWAVE/NHWAVE`     |
+| Current repository  | `https://github.com/zhisongli/NHWAVE-fromNhwave`     |
 
-                           github user           email                 affiliation                 role
-     Jim Kirby             JimKirby              kirby@udel.edu        University of Delaware      Group owner
-     Gangfeng Ma           gangfengma            gma@odu.edu           Old Dominion University
-     Fengyan Shi           fengyanshi            fyshi@udel.edu        University of Delaware    
-     Morteza Derakhti      derakhti              derakhti@uw.edu       University of Washington
-     Cheng Zhang           chzhangudel           chzhang@udel.edu      University of Delaware
-     
-Change history:
+---
+## 2. Development team members
 
-11/07/16 - Kirby extracts initialize.F and two_layer_slide.F from nhwave.F
-
-11/23/16 - Cheng 
- Bug Fixes
-·Fixed two bugs that leaded to unstability since two variables were not initialized.
-
- Additions to Functions
-·Added a function to record max runup of wave.
-·Added a function to record varying bathymetry.
-·Added a function to hot start simulation.
-·Added a function to limit max maximum Froude number.
-·Added a function to generate irregular waves with a internal wave maker.
-·Added a function to impose nesting data as boundary conditions.
-
- Changes
-·Changed Sommerfeld open boundary condition to Orlanski open boundary condition.
-·Changed subroutine flux_left_right_boundary to impose velocity at inflow boundary.
-·Changed subroutine probes to output velocity components at each layer when setting 
- z=-1.0 in stat.txt
- 
-08/03/2017 - Cheng Zhang
-
- Additions to Functions
-·Added a subroutine for fluid slide simulation.
-·Added a subroutine for comprehensive landslide bathymetry discription(from Fengyan).
-·Added a function to impose wall friction on east, west, south and/or north walls.
-·Added a function to identify 2D and 3D solid slide in input file.
-·Added a function for 3D solid triangular slide.
-
- Changes
-·Changed long sentences to short ones to avoid compile problems.
-
-23/03/2017 - Cheng Zhang
-
- Additions to Functions
-·Added a function to hot start simulation with moving boundary.
-
- Bug Fixes
-·Fixed a bug that can cause parallelization problem.
+| Name             | GitHub Username   | Email                | Affiliation              | Role         |
+|------------------|-------------------|----------------------|--------------------------|--------------|
+| Jim Kirby        | JimKirby          | kirby@udel.edu       | University of Delaware   | Group owner  |
+| Gangfeng Ma      | gangfengma        | gma@odu.edu          | Old Dominion University  |              |
+| Fengyan Shi      | fengyanshi        | fyshi@udel.edu       | University of Delaware   |              |
+| Morteza Derakhti | derakhti          | derakhti@uw.edu      | University of Washington |              |
+| Cheng Zhang      | chzhangudel       | chzhang@udel.edu     | University of Delaware   |              |
+| Martin Hu | MartinHu1997 |  hulihan@hhu.edu.cn | Hohai University |
 
 
-UPDATE_00004
-by Cheng Zhang
-09/05/2017
+---
 
-■Changes
-·Changed the old viscous slide model with a new one with TVD scheme, removing
- artificial diffusion from mass conservation and double counted bottom friction 
- from momentum equations.
+## 3. Update history
 
-■Bug Fixes
-·Fixed a bug that can cause parallelization problem.
-·Fixed two bugs in the granular slide model.
+### 3.1 UPDATE_0001
+**Date**: 2025/12/22  
+**Description**  
+- [x] Added Grimshaw solitary wave generation from the left boundary  
+- [x] Added Grimshaw solitary wave generation from the internal mass source  
+- [ ] Added Fenton solitary wave generation from the internal mass source (in progress)  
 
+---
+### 3.2 UPDATE_0002
+**Date**: 2025/12/22  
+**Description**  
+- [x] Added new functionality: NHWAVE can now read parameters from an arbitrary `input.txt` file  
+- [x] Added new functionality: The filename for water depth can now be specified in `input.txt` by default  
+- [x] Added new functionality: The filename for initial eta (`eta0`) can now be specified in `input.txt` by default  
+- [x] Added new functionality: The filename for initial u-velocity (`u0`) can now be specified in `input.txt` by default  
+- [x] Added new functionality: The filename for initial v-velocity (`v0`) can now be specified in `input.txt` by default  
+- [x] Added new functionality: The filename for initial w-velocity (`w0`) can now be specified in `input.txt` by default  
+- [x] Added new functionality: The filename for initial sediment concentration (`s0`) can now be specified in `input.txt` by default  
 
-UPDATE_00005
-by Cheng Zhang
-02/06/2017
+---
+### 3.3 UPDATE_0003
+**Date**: 2025/12/22  
+**Description**  
+- [x] Added new functionality: NHWAVE can now read parameters from an arbitrary input file  
+- [x] Introduced the variable `INPUT_NAME` in the subroutine `read_input`  
+- This modification is inspired by the approach used in **Funwave-TVD**  
 
-■Changes
-·Changed influx boundary condition to impose fixed flux.
+  ```fortran
+    ! >by Zhisong Li, based on Funwave-TVD.
+     character(len=80) :: INPUT_NAME
+     ! read from input.txt
+     FILE_NAME='input.txt'
+     ! read everything from input.txt
+      !>by Zhisong Li
+      !> Get the argument from the command line.
+      !> If no argument is provided, the filename defaults to 'input.txt' (as before)
+      !> If a different filename is provided, the corresponding file will be read
+      CALL GETARG(1,INPUT_NAME)
+      if (INPUT_NAME .eq. '') Then
+        FILE_NAME='input.txt'
+      Else
+        FILE_NAME=INPUT_NAME
+      endif
+  ```
 
-
-UPDATE_00006
-by Cheng Zhang
-04/12/2017
-
-■Bug Fixes
-·Fixed a bug in subroutine update_mask to ensure a wet-dry front moves correctly 
- indepedent on the direction.
-·Fixed a bug in subroutine eval_duvw that can lead non-zero DU/DV/DW in grid with 
- Mask(i,j)=0.
-·Fixed a bug in wall friction boundary condition.
-
-■Additions to Functions
-·Added a function to hot start simulation with viscous landslide.
-
-■Changes
-·Changed delxH and delyxH at the edge of wet-dry boundary by using Mask9 to avoid 
- extremely height slope at that place.
- 
- 
-UPDATE_00007
-by Cheng Zhang
-04/02/2018
-
-■Additions to Functions
-·Added a function to simulate slump case of rigid landslide.
-
-■Changes
-·Changed the IBM code to be applicable to the hydrostatic case. 
-
-
-02/08/2019 - Kirby
-
-  Collected all known instances (so far of solutions of linear dispersion relation and replaced by a call to new subroutine   
-  wave_dispersion.  Created new file waves.F that contains wave_dispersion plus boundary or initial wave generation.  
-  subroutine source_terms remains to be modified (to extract portions that only need to be executed once.)  Subroutines in waves.F 
-  all extracted from nhwave.F except for the new wave_dispersion.
-
-02/11/2019 - Kirby
-
-   Corrected error made in wave_dispersion subroutine.  Changed some of the copyright statements (gnu -> bsd)
-
-02/20/2019 - Kirby
-
-   Corrected two typos in waves.F
-   Moved subroutines related to Poisson solver from nhwave.F to pressure.F
-
-
-
-
+---
+### 3.4 UPDATE_0004
+**Date**: 2025/12/13  
+**Description**  
+- [x] This update is derived from https://github.com/MartinHu1997/NHWAVE  
+- [x] Debugged the vegetation model  
+- Replaced the variable `Vegbv` with `StemD` in two locations (in the subroutine `kepsilon_3D` of `nhwave.F`)  
+- `Vegbv` previously represented stem size but is no longer used  
+- `StemD` now represents stem diameter  
+- [x] Removed local variables 'cfk' and 'cfe' from the subroutines `kepsilon` and `kepsilon_3D` in `nhwave.F`  
+- `Cfk` and `Cfe` are now required as input parameters in `input.txt`
