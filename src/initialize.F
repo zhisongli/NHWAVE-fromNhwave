@@ -458,14 +458,17 @@
 
      ! bathymetry     
      CALL GET_STRING_VAL(DEPTH_TYPE,FILE_NAME,'DEPTH_TYPE',line,ierr)
+     CALL GET_STRING_VAL(DEPTH_FILE,FILE_NAME,'DEPTH_FILE',line,ierr)
      CALL GET_LOGICAL_VAL(ANA_BATHY,FILE_NAME,'ANA_BATHY',line)
      CALL GET_Float_VAL(DepConst,FILE_NAME,'DepConst',line)
 # if defined (PARALLEL)
      if(myid.eq.0) WRITE(3,'(A12,A50)')'DEPTH_TYPE= ',DEPTH_TYPE
+     if(myid.eq.0) WRITE(3,'(A12,A50)')'DEPTH_FILE= ',DEPTH_FILE
      if(myid.eq.0) WRITE(3,'(A11,L4)')'ANA_BATHY= ',ANA_BATHY
      if(myid.eq.0) WRITE(3,'(A10,F8.5)')'DepConst= ',DepConst
 # else
      WRITE(3,'(A12,A50)')'DEPTH_TYPE= ',DEPTH_TYPE
+     WRITE(3,'(A12,A50)')'DEPTH_FILE= ',DEPTH_FILE
      WRITE(3,'(A11,L4)')'ANA_BATHY= ',ANA_BATHY
      WRITE(3,'(A10,F8.5)')'DepConst= ',DepConst
 # endif
@@ -1793,13 +1796,16 @@
          enddo
          enddo
        else
-         open(5,file='depth.txt',status='old')
+     !     open(5,file='depth.txt',status='old')
+         open(5,file=TRIM(Depth_File),status='old') ! added by ZhisongLi, 2025-12-22.
 !
 !    Need to make file name arbitrary  (kirby, 6/27/16)
 !
          do j = 1,Nglob+1
            read(5,*) (HG(i,j),i=1,Mglob+1)
          enddo
+         close(5) ! added by ZhisongLi, 2025-12-22.
+
        endif
 
 ! find permanent dry points (how would this be possible?)
@@ -1846,10 +1852,12 @@
          enddo
          enddo
        else ! not analytical bathymetry, read from depth file
-         open(5,file='depth.txt',status='old')
+     !     open(5,file='depth.txt',status='old')
+         open(5,file=TRIM(Depth_File),status='old') ! added by ZhisongLi, 2025-12-22.
          do j = 1,Nglob
            read(5,*) (HCG(i,j),i=1,Mglob)
          enddo
+         close(5) ! added by ZhisongLi, 2025-12-22.
        endif
 	   
 # if defined (PARALLEL)
@@ -2266,6 +2274,7 @@
          do j = 1,Nglob+1
            read(5,*) (HG(i,j),i=1,Mglob+1)
          enddo
+         close(5) ! added by ZhisongLi, 2025-12-22.
        endif
 
        ! find pernament dry points
@@ -2353,6 +2362,7 @@
          do j = 1,Nglob
            read(5,*) (HCG(i,j),i=1,Mglob)
          enddo
+         close(5) ! added by ZhisongLi, 2025-12-22.
 
 
 # if defined (PARALLEL)
