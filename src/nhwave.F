@@ -3235,7 +3235,7 @@
          do i = Ibeg,Iend
            if(xstat(n)>=x(i).and.xstat(n)<x(i+1).and.  &
               ystat(n)>=y(j).and.ystat(n)<y(j+1)) then
-             write(iu,'(100E12.4)') time,eta(i,j)
+             write(iu,'(100E20.10)') time,eta(i,j)
            endif
          enddo
          enddo
@@ -3246,7 +3246,7 @@
          do i = Ibeg,Iend
            if(xstat(n)>=x(i).and.xstat(n)<x(i+1).and.  &
               ystat(n)>=y(j).and.ystat(n)<y(j+1)) then
-             write(iu,'(100E14.6)') time,eta(i,j),(u(i,j,k),v(i,j,k),w(i,j,k),k=Kbeg,Kend)
+             write(iu,'(100E20.10)') time,eta(i,j),(u(i,j,k),v(i,j,k),w(i,j,k),k=Kbeg,Kend)
            endif
          enddo
          enddo
@@ -3277,7 +3277,7 @@
                endif
              enddo
 
-             write(iu,'(100E12.4)') time,eta(i,j),ulev,vlev,wlev,plev,klev
+             write(iu,'(100E20.10)') time,eta(i,j),ulev,vlev,wlev,plev,klev
            endif
          enddo
          enddo
