@@ -14,7 +14,7 @@
 #         FLAG_5 = -DTEMPERATURE
 #         FLAG_6 = -DBUBBLE
 #         FLAG_7 = -DSEDIMENT
-        FLAG_8 = -DVEGETATION
+#         FLAG_8 = -DVEGETATION
 #         FLAG_9 = -DINTEL
 #         FLAG_10 = -DBALANCE2D
 #         FLAG_11 = -DOBSTACLE
@@ -26,7 +26,7 @@
 #         FLAG_17 = -DFLUIDSLIDE
 #         FLAG_18 = -DLANDSLIDE_COMPREHENSIVE
 #         FLAG_19 = -DDEFORMABLESLIDE
-          FLAG = -DPRESSUREACC
+#         FLAG = -DPRESSUREACC
 #--------------------------------------------------------------------------
 #  mpi defs 
 #--------------------------------------------------------------------------
