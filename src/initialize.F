@@ -513,9 +513,17 @@
 
      ! wind speed/stress
      CALL GET_INTEGER_VAL(Iws,FILE_NAME,'Iws',line)
+     
      if(Iws==1) then
        CALL GET_Float_VAL(WindU,FILE_NAME,'WindU',line)
        CALL GET_Float_VAL(WindV,FILE_NAME,'WindV',line)
+     elseif(Iws == 2) then
+          CALL GET_STRING_VAL(Wind_FILE,FILE_NAME,'Wind_FILE',line,ierr)
+# if defined (PARALLEL)
+          if(myid.eq.0) WRITE(3,'(A14,A80)')'Wind_FILE= ',Wind_FILE
+# else
+          WRITE(3,'(A14,A80)')'Wind_FILE= ',Wind_FILE
+# endif
      endif
 
      ! Coriolis

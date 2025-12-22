@@ -5352,13 +5352,15 @@
        enddo
        enddo
      elseif(Iws==2) then
-       open(7,file='wind.txt')
+       ! open(7,file='wind.txt')
+       open(7,file=Trim(Wind_FILE), status='old')
 
        do j = 1,Nglob
        do i = 1,Mglob
          read(7,*) WUG(i,j),WVG(i,j)
        enddo
        enddo
+       close(7)
 
 # if defined (PARALLEL)
        do j = Jbeg,Jend
