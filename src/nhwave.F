@@ -10095,8 +10095,8 @@ endif
 !       c2e = 1.92
        c3e = 0.0
        cmiu = 0.085
-       cfk = 1.0
-       cfe = 1.33
+!       cfk = 1.0
+!       cfe = 1.33
        Sche = 0.72
        Schk = 0.72
     else
@@ -10105,8 +10105,8 @@ endif
 !     c3e = -1.4
        c3e = 0.0
        cmiu = 0.09
-       cfk = 1.0
-       cfe = 1.33
+!       cfk = 1.0
+!       cfe = 1.33
        Sche = 1.3
        Schk = 1.0
     endif
