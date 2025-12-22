@@ -44,6 +44,11 @@
      character(len=80) :: dt_constraint
      character(len=80) :: CONVECTION
      character(len=80) :: DEPTH_FILE
+     character(len=80) :: ETA_FILE ! added by ZhisongLi 2025-12-22
+     character(len=80) :: U_FILE
+     character(len=80) :: V_FILE
+     character(len=80) :: W_FILE
+     character(len=80) :: S_FILE
 
 # if defined (PARALLEL)
      integer :: myid,ier
