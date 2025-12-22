@@ -50,6 +50,7 @@
      character(len=80) :: W_FILE
      character(len=80) :: S_FILE
      character(len=80) :: Wind_FILE
+     character(len=80) :: STATIONS_FILE
 
 # if defined (PARALLEL)
      integer :: myid,ier

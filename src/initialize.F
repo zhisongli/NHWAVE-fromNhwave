@@ -1280,17 +1280,21 @@
 
      ! probe output
      CALL GET_INTEGER_VAL(NSTAT,FILE_NAME,'NSTAT',line)
+     CALL GET_STRING_VAL(STATIONS_FILE,FILE_NAME,'STATIONS_FILE',line,ierr)
      CALL GET_Float_VAL(Plot_Intv_Stat,FILE_NAME,'PLOT_INTV_STAT',line)
 # if defined (PARALLEL)
        if(myid.eq.0) WRITE(3,'(A7,I3)')'NSTAT= ', NSTAT
+       if(myid.eq.0) WRITE(3,'(A,A80)')'STATIONS_FILE= ', STATIONS_FILE
        if(myid.eq.0) WRITE(3,'(A19,F6.3)')'Plot_Intv_Stat= ', Plot_Intv_Stat
 # else
        WRITE(3,'(A7,I3)')'NSTAT= ', NSTAT
+       WRITE(3,'(A,A80)')'STATIONS_FILE= ', STATIONS_FILE
        WRITE(3,'(A19,F6.3)')'Plot_Intv_Stat= ', Plot_Intv_Stat
 # endif
 
      if(NSTAT>0) then
-       open(15,file='stat.txt',status='old')
+       ! open(15,file='stat.txt',status='old')
+       open(15,file=Trim(STATIONS_FILE),status='old')
        do i = 1,NSTAT
          read(15,*) xstat(i),ystat(i),zstat(i)
        enddo
