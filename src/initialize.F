@@ -481,7 +481,6 @@
      CALL GET_STRING_VAL(W_FILE,FILE_NAME,'W_FILE',line,ierr)
 # if defined (PARALLEL)
      if(myid.eq.0) WRITE(3,'(A14,L4)')'INITIAL_EUVW= ',INITIAL_EUVW
-     if(myid.eq.0) WRITE(3,'(A14,L4)')'U_FILE= ',U_FILE
      if(myid.eq.0) WRITE(3,'(A14,L4)')'V_FILE= ',V_FILE
      if(myid.eq.0) WRITE(3,'(A14,L4)')'W_FILE= ',W_FILE
 # else
