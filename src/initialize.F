@@ -122,6 +122,8 @@
 
      implicit none
      character(len=80) :: FILE_NAME
+     ! >by Zhisong Li, based on Funwave-TVD.
+     character(len=80) :: INPUT_NAME 
      real(SP) :: Segma,Celerity,Wave_Length,Wave_Number,  &
                  Fk,Fkdif,Theta_Calc,Wnumy,tmp,tmp1,DFreq, &
                  Freq_Peak,gam,sa,sb,SumInt,A_Jon
@@ -135,6 +137,20 @@
 
      ! read from input.txt
      FILE_NAME='input.txt'
+     ! read everything from input.txt
+
+      !>by Zhisong Li
+      !> Get the argument from the command.
+      !> If no input in command, file name is 'input.txt' (same as before)
+      !> If the input comes with other name, read the correponding file
+      CALL GETARG(1,INPUT_NAME) 
+      if (INPUT_NAME .eq. '') Then
+        FILE_NAME='input.txt'
+      Else
+        FILE_NAME=INPUT_NAME
+      endif
+     !  INPUT_FILE_NAME=FILE_NAME
+
 !
 !    title
 !
