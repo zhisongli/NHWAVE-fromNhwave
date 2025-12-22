@@ -1,63 +1,71 @@
-﻿# NHWAVE Update Records
-
----  
-**Author**: Zhisong Li
-**Email**:  lizhisong@sjtu.edu.cn, lizhisong@alunami.sjtu.edu.cn, lizhisongsjtu@163.com
-
-**Forked from `https://github.com/NHWAVE/NHWAVE`**
+﻿
+# `NHWAVE-fromNhwave` Update Records
 
 ---
-## UPDATE_0001
+## 1. Information of this repository
 
-**Date**: 2025/12/22
+| Column A       | Column B                  |
+|------------------|---------------------------------------------|
+| Author       | **Dr. Zhisong Li**           |
+| Email        | lizhisong@sjtu.edu.cn, lizhisongsjtu@163.com |
+| Original repository  | `https://github.com/NHWAVE/NHWAVE`     |
+| Current repository  | `https://github.com/zhisongli/NHWAVE-fromNhwave`     |
 
-**Description**  
+---
+## 2. Development team members
 
-- [x] Add Grimshaw solitary from the left boundary
-- [x] Add Grimshaw solitary from the internal mass source
-- [ ] Add Fenton solitary from the internal mass source
+| Name             | GitHub Username   | Email                | Affiliation              | Role         |
+|------------------|-------------------|----------------------|--------------------------|--------------|
+| Jim Kirby        | JimKirby          | kirby@udel.edu       | University of Delaware   | Group owner  |
+| Gangfeng Ma      | gangfengma        | gma@odu.edu          | Old Dominion University  |              |
+| Fengyan Shi      | fengyanshi        | fyshi@udel.edu       | University of Delaware   |              |
+| Morteza Derakhti | derakhti          | derakhti@uw.edu      | University of Washington |              |
+| Cheng Zhang      | chzhangudel       | chzhang@udel.edu     | University of Delaware   |              |
+| Martin Hu | MartinHu1997 |  hulihan@hhu.edu.cn | Hohai University |
 
 
 ---
-## UPDATE_0002
 
-**Date**: 2025/12/22
+## 3. Update history
 
+### 3.1 UPDATE_0001
+**Date**: 2025/12/22  
 **Description**  
-
-- [x] Add new functions: nhwave could read parameters from arbitary input.txt file.
-- [x] Add new functions: file name of water depth can be read from input.txt file by default.
-- [x] Add new functions: file name of initial eta0 can be read from input.txt file by default.
-- [x] Add new functions: file name of initial u0 can be read from input.txt file by default.
-- [x] Add new functions: file name of initial v0 can be read from input.txt file by default.
-- [x] Add new functions: file name of initial w0 can be read from input.txt file by default.
-- [x] Add new functions: file name of initial s0 can be read from input.txt file by default.
+- [x] Added Grimshaw solitary wave generation from the left boundary  
+- [x] Added Grimshaw solitary wave generation from the internal mass source  
+- [ ] Added Fenton solitary wave generation from the internal mass source (in progress)  
 
 ---
-## UPDATE_0003
-
-**Date**: 2025/12/22
-
+### 3.2 UPDATE_0002
+**Date**: 2025/12/22  
 **Description**  
+- [x] Added new functionality: NHWAVE can now read parameters from an arbitrary `input.txt` file  
+- [x] Added new functionality: The filename for water depth can now be specified in `input.txt` by default  
+- [x] Added new functionality: The filename for initial eta (`eta0`) can now be specified in `input.txt` by default  
+- [x] Added new functionality: The filename for initial u-velocity (`u0`) can now be specified in `input.txt` by default  
+- [x] Added new functionality: The filename for initial v-velocity (`v0`) can now be specified in `input.txt` by default  
+- [x] Added new functionality: The filename for initial w-velocity (`w0`) can now be specified in `input.txt` by default  
+- [x] Added new functionality: The filename for initial sediment concentration (`s0`) can now be specified in `input.txt` by default  
 
-- [x] Add new functions: nhwave could read parameters from arbitary input.txt file.
-
-- [x] add the variable `INPUT_NAME` in the subroutine `read_input`.
-  - This modification draws on the approach used in **Funwave-TVD**.
+---
+### 3.3 UPDATE_0003
+**Date**: 2025/12/22  
+**Description**  
+- [x] Added new functionality: NHWAVE can now read parameters from an arbitrary input file  
+- [x] Introduced the variable `INPUT_NAME` in the subroutine `read_input`  
+- This modification is inspired by the approach used in **Funwave-TVD**  
 
   ```fortran
     ! >by Zhisong Li, based on Funwave-TVD.
-     character(len=80) :: INPUT_NAME 
-
+     character(len=80) :: INPUT_NAME
      ! read from input.txt
      FILE_NAME='input.txt'
      ! read everything from input.txt
-
       !>by Zhisong Li
-      !> Get the argument from the command.
-      !> If no input in command, file name is 'input.txt' (same as before)
-      !> If the input comes with other name, read the correponding file
-      CALL GETARG(1,INPUT_NAME) 
+      !> Get the argument from the command line.
+      !> If no argument is provided, the filename defaults to 'input.txt' (as before)
+      !> If a different filename is provided, the corresponding file will be read
+      CALL GETARG(1,INPUT_NAME)
       if (INPUT_NAME .eq. '') Then
         FILE_NAME='input.txt'
       Else
@@ -65,21 +73,14 @@
       endif
   ```
 
-
 ---
-## UPDATE_0004
-
-**Date**: 2025/12/13
-
+### 3.4 UPDATE_0004
+**Date**: 2025/12/13  
 **Description**  
-
-- [x] This update comes from https://github.com/MartinHu1997/NHWAVE
-- [x] Debug (Vegetation Model)
-  - Replace the variable 'Vegbv' with 'StemD' at two places (in the subroutine kepsilon_3D of nhwave.F)  
-
-  - 'Vegbv' represents the Stem Size and was no longer used now.  
-
-  - 'StemD' represents the Stem Size  
-
-- [x] The local variables, 'cfk' and 'cfe', are no longer defined in the subroutines kepsilon and kepsilon_3D now (nhwave.F)  
-  - 'Cfk' and 'Cfe' are required for input file now (input.txt)  
+- [x] This update is derived from https://github.com/MartinHu1997/NHWAVE  
+- [x] Debugged the vegetation model  
+- Replaced the variable `Vegbv` with `StemD` in two locations (in the subroutine `kepsilon_3D` of `nhwave.F`)  
+- `Vegbv` previously represented stem size but is no longer used  
+- `StemD` now represents stem diameter  
+- [x] Removed local variables 'cfk' and 'cfe' from the subroutines `kepsilon` and `kepsilon_3D` in `nhwave.F`  
+- `Cfk` and `Cfe` are now required as input parameters in `input.txt`
