@@ -475,10 +475,22 @@
 
      ! initial conditions
      CALL GET_LOGICAL_VAL(INITIAL_EUVW,FILE_NAME,'INITIAL_EUVW',line)
+     CALL GET_STRING_VAL(ETA_FILE,FILE_NAME,'ETA_FILE',line,ierr)
+     CALL GET_STRING_VAL(U_FILE,FILE_NAME,'U_FILE',line,ierr)
+     CALL GET_STRING_VAL(V_FILE,FILE_NAME,'V_FILE',line,ierr)
+     CALL GET_STRING_VAL(W_FILE,FILE_NAME,'W_FILE',line,ierr)
 # if defined (PARALLEL)
      if(myid.eq.0) WRITE(3,'(A14,L4)')'INITIAL_EUVW= ',INITIAL_EUVW
+     if(myid.eq.0) WRITE(3,'(A14,L4)')'ETA_FILE= ',ETA_FILE
+     if(myid.eq.0) WRITE(3,'(A14,L4)')'U_FILE= ',U_FILE
+     if(myid.eq.0) WRITE(3,'(A14,L4)')'V_FILE= ',V_FILE
+     if(myid.eq.0) WRITE(3,'(A14,L4)')'W_FILE= ',W_FILE
 # else
      WRITE(3,'(A14,L4)')'INITIAL_EUVW= ',INITIAL_EUVW
+     WRITE(3,'(A14,L4)')'ETA_FILE= ',ETA_FILE
+     WRITE(3,'(A14,L4)')'U_FILE= ',U_FILE
+     WRITE(3,'(A14,L4)')'V_FILE= ',V_FILE
+     WRITE(3,'(A14,L4)')'W_FILE= ',W_FILE
 # endif
 
      ! bottom roughness
@@ -994,6 +1006,7 @@
 
 # if defined (SALINITY)
      CALL GET_LOGICAL_VAL(INITIAL_SALI,FILE_NAME,'INITIAL_SALI',line)
+     CALL GET_STRING_VAL(S_FILE,FILE_NAME,'S_FILE',line,ierr)
 # endif
 
 # if defined (SEDIMENT)
@@ -3017,30 +3030,39 @@
      if(INITIAL_EUVW) then
 
         ! initial condition for eta
-        open(21,file='eta0.txt',status='old')
+        ! open(21,file='eta0.txt',status='old')
+          open(21,file=TRIM(ETA_FILE),status='old')
+          
         do j = 1,Nglob
           read(21,*) (EtaG(i,j),i=1,Mglob)
         enddo
+        close(21)
       
         ! initial condition for U, V, W
-        open(22,file='uvw0.txt',status='old')
+        ! open(22,file='uvw0.txt',status='old')
+        open(22,file=TRIM(U_FILE),status='old')
         do k = 1,Kglob
         do j = 1,Nglob
           read(22,*) (UG(i,j,k),i=1,Mglob)
         enddo
         enddo
-
+        close(22)
+     
+        open(22,file=TRIM(V_FILE),status='old')
         do k = 1,Kglob
         do j = 1,Nglob
           read(22,*) (VG(i,j,k),i=1,Mglob)
         enddo
         enddo
+        close(22)
 
+        open(22,file=TRIM(W_FILE),status='old')
         do k = 1,Kglob
         do j = 1,Nglob
           read(22,*) (WG(i,j,k),i=1,Mglob)
         enddo
         enddo
+        close(22)
 
 # if defined (PARALLEL)
        do j = Jbeg,Jend
@@ -3226,12 +3248,14 @@
 
      ! read initial salinity field from an input file
      if(INITIAL_SALI) then
-       open(23,file='sali0.txt',status='old')
+     ! open(23,file='sali0.txt',status='old')
+          open(23,file=TRIM(S_FILE),status='old')
        do k = 1,Kglob
        do j = 1,Nglob
          read(23,*) (SaliG(i,j,k),i=1,Mglob)
        enddo
        enddo
+       close(23)
 
 # if defined (PARALLEL)
        do j = Jbeg,Jend
