@@ -3816,10 +3816,10 @@
        do k = Kbeg,Kend
        do j = Jbeg,Jend
        do i = Ibeg,Iend
-         tmp1 = dx**2/(abs(CmuHt(i,j,k))+1.e-16)
+         tmp1 = dx**2/(abs(CmuHt(i,j,k))+Small)
          if(tmp1<tmp2) tmp2 = tmp1
 
-         tmp1 = dy**2/(abs(CmuHt(i,j,k))+1.e-16)
+         tmp1 = dy**2/(abs(CmuHt(i,j,k))+Small)
          if(tmp1<tmp2) tmp2 = tmp1
        enddo
        enddo
