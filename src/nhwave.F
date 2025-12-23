@@ -3566,7 +3566,7 @@
       enddo
       close(5)
     endif
-100 FORMAT(5000f15.6)
+100 FORMAT(999999E15.6)
 
     end subroutine putfile2D
 
@@ -3650,7 +3650,7 @@
       enddo
       close(5)
     endif
-100 FORMAT(5000f15.6)
+100 FORMAT(999999E15.6)
 
     deallocate(philoc)
     deallocate(xx)
@@ -3669,7 +3669,7 @@
        write(5,100) (phi(i,j),i=Ibeg,Iend)
      enddo
      close(5)
- 100 FORMAT(5000f15.6)
+100 FORMAT(999999E15.6)
      end subroutine putfile2D
 
      subroutine putfile3D(file,phi)
@@ -3686,7 +3686,7 @@
      enddo
      enddo
      close(5)
- 100 FORMAT(5000f15.6)
+100 FORMAT(999999E15.6)
      end subroutine putfile3D  
 # endif
 
