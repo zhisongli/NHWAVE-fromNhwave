@@ -2608,7 +2608,7 @@
      nbed = 0
 # endif
 
-     Icount = 0
+     Icount = -1 !! for output file number
      
      ! working arrays
      D = Zero
