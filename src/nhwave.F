@@ -3235,7 +3235,7 @@
          do i = Ibeg,Iend
            if(xstat(n)>=x(i).and.xstat(n)<x(i+1).and.  &
               ystat(n)>=y(j).and.ystat(n)<y(j+1)) then
-             write(iu,'(100E20.10)') time,eta(i,j)
+             write(iu,'(999999f15.6)') time,eta(i,j)
            endif
          enddo
          enddo
@@ -3246,7 +3246,7 @@
          do i = Ibeg,Iend
            if(xstat(n)>=x(i).and.xstat(n)<x(i+1).and.  &
               ystat(n)>=y(j).and.ystat(n)<y(j+1)) then
-             write(iu,'(100E20.10)') time,eta(i,j),(u(i,j,k),v(i,j,k),w(i,j,k),k=Kbeg,Kend)
+             write(iu,'(999999f15.6)') time,eta(i,j),(u(i,j,k),v(i,j,k),w(i,j,k),k=Kbeg,Kend)
            endif
          enddo
          enddo
@@ -3566,7 +3566,7 @@
       enddo
       close(5)
     endif
-100 FORMAT(999999E15.6)
+100 FORMAT(999999f15.6)
 
     end subroutine putfile2D
 
@@ -3650,7 +3650,7 @@
       enddo
       close(5)
     endif
-100 FORMAT(999999E15.6)
+100 FORMAT(999999f15.6)
 
     deallocate(philoc)
     deallocate(xx)
@@ -3669,7 +3669,7 @@
        write(5,100) (phi(i,j),i=Ibeg,Iend)
      enddo
      close(5)
-100 FORMAT(999999E15.6)
+100 FORMAT(999999f15.6)
      end subroutine putfile2D
 
      subroutine putfile3D(file,phi)
@@ -3686,7 +3686,7 @@
      enddo
      enddo
      close(5)
-100 FORMAT(999999E15.6)
+100 FORMAT(999999f15.6)
      end subroutine putfile3D  
 # endif
 
