@@ -123,6 +123,7 @@
      implicit none
      character(len=80) :: FILE_NAME
      ! >by Zhisong Li, based on Funwave-TVD.
+     CHARACTER(LEN=80) MKFOLDER
      character(len=80) :: INPUT_NAME 
      real(SP) :: Segma,Celerity,Wave_Length,Wave_Number,  &
                  Fk,Fkdif,Theta_Calc,Wnumy,tmp,tmp1,DFreq, &
@@ -246,6 +247,24 @@
      if(myid.eq.0) WRITE(3,'(A15,A50)')'RESULT_FOLDER= ', RESULT_FOLDER
 # else
      WRITE(3,'(A15,A50)')'RESULT_FOLDER= ', RESULT_FOLDER
+# endif
+
+! create result folder
+      MKFOLDER = "mkdir -p "//TRIM(RESULT_FOLDER)
+# if defined (PARALLEL)
+      IF (myid.eq.0) THEN
+# if defined (INTEL)
+        RES = SYSTEM(TRIM(MKFOLDER))
+# else
+        CALL SYSTEM(TRIM(MKFOLDER))
+# endif
+      ENDIF
+# else
+# if defined(INTEL)
+      RES = SYSTEM(TRIM(MKFOLDER))
+# else
+      CALL SYSTEM(TRIM(MKFOLDER))
+# endif
 # endif
 
      ! simulation steps and time
