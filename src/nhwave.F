@@ -117,6 +117,15 @@
 !-----------------------------------------------------------------------------------------
 !
      do while (TIME<TOTAL_TIME.and.RUN_STEP<SIM_STEPS)
+
+      ! field output to files
+       if(TIME>=Plot_Start) then
+         Plot_Count = Plot_Count+dt
+         if(Plot_Count>=Plot_Intv) then
+           Plot_Count=Plot_Count-Plot_Intv
+           call preview
+         endif
+       endif
 	 
 	   ! nesting (added by Cheng)
 # if defined (COUPLING)
@@ -267,33 +276,14 @@
          call wave_average
        endif
 
-       ! screen output
-       Screen_Count = Screen_Count+dt
-       if(Screen_Count>=Screen_Intv) then
-         Screen_Count = Screen_Count-Screen_Intv
-         call statistics
-       endif
+       
 	   
 	   ! added by Cheng for recording Hmax
 	   call max_min_property
 
-       ! probe output to files
-       if(NSTAT>0) then
-         Plot_Count_Stat = Plot_Count_Stat+dt
-         if(Plot_Count_Stat>=Plot_Intv_Stat) then
-           Plot_Count_Stat=Plot_Count_Stat-Plot_Intv_Stat
-           call probes
-         endif
-       endif
+       
 
-       ! field output to files
-       if(TIME>=Plot_Start) then
-         Plot_Count = Plot_Count+dt
-         if(Plot_Count>=Plot_Intv) then
-           Plot_Count=Plot_Count-Plot_Intv
-           call preview
-         endif
-       endif
+       
       
      end do
 	 
@@ -3302,6 +3292,25 @@
      character(len=80) :: FILE_NAME=''
      character(len=80) :: file=''
 
+
+
+     ! screen output, move from main to here.
+       Screen_Count = Screen_Count+dt
+       if(Screen_Count>=Screen_Intv) then
+         Screen_Count = Screen_Count-Screen_Intv
+         call statistics
+       endif
+
+       ! probe output to files
+       if(NSTAT>0) then
+         Plot_Count_Stat = Plot_Count_Stat+dt
+         if(Plot_Count_Stat>=Plot_Intv_Stat) then
+           Plot_Count_Stat=Plot_Count_Stat-Plot_Intv_Stat
+           call probes
+         endif
+       endif
+
+
      ! file number
      Icount = Icount+1
    
@@ -3318,17 +3327,7 @@
 102  FORMAT(A20,I5,A14,F8.3,A2,F8.3)
 100  FORMAT(5000E16.6)
 
-     I1 = mod(Icount/10000,10)
-     I2 = mod(Icount/1000,10)
-     I3 = mod(Icount/100,10)
-     I4 = mod(Icount/10,10)
-     I5 = mod(Icount,10)
-
-     write(FILE_NAME(1:1),'(I1)') I1
-     write(FILE_NAME(2:2),'(I1)') I2
-     write(FILE_NAME(3:3),'(I1)') I3
-     write(FILE_NAME(4:4),'(I1)') I4
-     write(FILE_NAME(5:5),'(I1)') I5
+     write(FILE_NAME,'(I5.5)') Icount
 
 # if defined (PARALLEL)
      if(myid.eq.0) then
@@ -12497,11 +12496,7 @@ endif
 
         FDIR = TRIM(RESULT_FOLDER)
 
-        I1 = mod(nbed/10,10)
-        I2 = mod(nbed,10)
-
-        write(FILE_NAME(1:1),'(I1)') I1
-        write(FILE_NAME(2:2),'(I1)') I2
+        write(FILE_NAME(1:2),'(I2.2)') nbed
 
         file=TRIM(FDIR)//'depos_'//TRIM(FILE_NAME)
         call putfile2D(file,TotDep)
