@@ -187,6 +187,7 @@ BC_Zn = 1
 
 ! ---------------------WAVEMAKER------------------------------
 ! wavemaker
+! wavemaker
 ! AMP - wave height; PER - wave period; DEP - incident water depth
 ! THETA - incident wave angle
 ! LEF_SOL - left boundary solitary wave, need AMP,DEP
@@ -209,6 +210,7 @@ BC_Zn = 1
 
 ! LEF_BOU - left boundary, solitary wave of Boussinesq
 ! LEF_GRM - left boundary, solitary wave of Grimshaw
+! INT_BOU - internal wavemaker, solitary wave of Boussinesq
 
 WAVEMAKER = LEF_GRM
 AMP = 0.2
@@ -295,7 +297,7 @@ VegH = 0.12
 VegDens = 1618.0
 VegVol = 0.0
 StemD = 0.0064
-Vegbv = 5.0e-3
+! Vegbv = 5.0e-3 ! useless, StemD
 VegDrag = 1.5
 Cfk = 1.0
 Cfe = 1.33
