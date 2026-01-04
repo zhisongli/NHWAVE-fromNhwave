@@ -5523,7 +5523,7 @@
 # if defined (PARALLEL)
      if(n_west.eq.MPI_PROC_NULL) then
 # endif
-     if(WaveMaker(1:7)=='LEF_SOL') then
+     if((WaveMaker(1:7)=='LEF_SOL').or.(WaveMaker(1:7)=='LEF_BOU')) then
        call solitary_wave_left_boundary
      elseif(WaveMaker(1:7)=='LEF_LIN') then
        call linear_wave_left_boundary

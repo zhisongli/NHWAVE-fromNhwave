@@ -415,7 +415,7 @@
      endif
 
      ! internal wavemaker for solitary wave
-     if(WaveMaker(1:7)=='INT_SOL') then
+     if(WaveMaker(1:7)=='INT_SOL' .or. WaveMaker(1:7)=='INT_BOU') then
        Celerity = sqrt(Grav*Dep_Wave*(1.0+Amp_Wave/Dep_Wave))
        Atmp = sqrt(0.75*Amp_Wave/Dep_Wave**3)
        Xstart = 4.0*Dep_Wave/sqrt(Amp_Wave/Dep_Wave)
