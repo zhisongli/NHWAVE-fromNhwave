@@ -474,14 +474,17 @@
 
      ! bathymetry     
      CALL GET_STRING_VAL(DEPTH_TYPE,FILE_NAME,'DEPTH_TYPE',line,ierr)
+     CALL GET_STRING_VAL(DEPTH_FILE,FILE_NAME,'DEPTH_FILE',line,ierr)
      CALL GET_LOGICAL_VAL(ANA_BATHY,FILE_NAME,'ANA_BATHY',line)
      CALL GET_Float_VAL(DepConst,FILE_NAME,'DepConst',line)
 # if defined (PARALLEL)
      if(myid.eq.0) WRITE(3,'(A12,A50)')'DEPTH_TYPE= ',DEPTH_TYPE
+     if(myid.eq.0) WRITE(3,'(A12,A50)')'DEPTH_FILE= ',DEPTH_FILE
      if(myid.eq.0) WRITE(3,'(A11,L4)')'ANA_BATHY= ',ANA_BATHY
      if(myid.eq.0) WRITE(3,'(A10,F8.5)')'DepConst= ',DepConst
 # else
      WRITE(3,'(A12,A50)')'DEPTH_TYPE= ',DEPTH_TYPE
+     WRITE(3,'(A12,A50)')'DEPTH_FILE= ',DEPTH_FILE
      WRITE(3,'(A11,L4)')'ANA_BATHY= ',ANA_BATHY
      WRITE(3,'(A10,F8.5)')'DepConst= ',DepConst
 # endif
@@ -493,6 +496,23 @@
 # else
      WRITE(3,'(A14,L4)')'INITIAL_EUVW= ',INITIAL_EUVW
 # endif
+     if (INITIAL_EUVW) then
+          CALL GET_STRING_VAL(ETA_FILE,FILE_NAME,'ETA_FILE',line,ierr)
+          CALL GET_STRING_VAL(U_FILE,FILE_NAME,'U_FILE',line,ierr)
+          CALL GET_STRING_VAL(V_FILE,FILE_NAME,'V_FILE',line,ierr)
+          CALL GET_STRING_VAL(W_FILE,FILE_NAME,'W_FILE',line,ierr)
+# if defined (PARALLEL)
+          if(myid.eq.0) WRITE(3,'(A14,A80)')'ETA_FILE= ',ETA_FILE
+          if(myid.eq.0) WRITE(3,'(A14,A80)')'U_FILE= ',U_FILE
+          if(myid.eq.0) WRITE(3,'(A14,A80)')'V_FILE= ',V_FILE
+          if(myid.eq.0) WRITE(3,'(A14,A80)')'W_FILE= ',W_FILE
+# else
+          WRITE(3,'(A14,A80)')'ETA_FILE= ',ETA_FILE
+          WRITE(3,'(A14,A80)')'U_FILE= ',U_FILE
+          WRITE(3,'(A14,A80)')'V_FILE= ',V_FILE
+          WRITE(3,'(A14,A80)')'W_FILE= ',W_FILE
+# endif
+     endif
 
      ! bottom roughness
      CALL GET_INTEGER_VAL(Ibot,FILE_NAME,'Ibot',line)
@@ -1272,17 +1292,20 @@
 
      ! probe output
      CALL GET_INTEGER_VAL(NSTAT,FILE_NAME,'NSTAT',line)
+     CALL GET_STRING_VAL(STATIONS_FILE,FILE_NAME,'STATIONS_FILE',line,ierr)
      CALL GET_Float_VAL(Plot_Intv_Stat,FILE_NAME,'PLOT_INTV_STAT',line)
 # if defined (PARALLEL)
        if(myid.eq.0) WRITE(3,'(A7,I3)')'NSTAT= ', NSTAT
+       if(myid.eq.0) WRITE(3,'(A,A80)')'STATIONS_FILE= ', STATIONS_FILE
        if(myid.eq.0) WRITE(3,'(A19,F6.3)')'Plot_Intv_Stat= ', Plot_Intv_Stat
 # else
        WRITE(3,'(A7,I3)')'NSTAT= ', NSTAT
+       WRITE(3,'(A,A80)')'STATIONS_FILE= ', STATIONS_FILE
        WRITE(3,'(A19,F6.3)')'Plot_Intv_Stat= ', Plot_Intv_Stat
 # endif
 
      if(NSTAT>0) then
-       open(15,file='stat.txt',status='old')
+       open(15,file=Trim(STATIONS_FILE),status='old')
        do i = 1,NSTAT
          read(15,*) xstat(i),ystat(i),zstat(i)
        enddo
@@ -1809,13 +1832,14 @@
          enddo
          enddo
        else
-         open(5,file='depth.txt',status='old')
+         open(5,file=TRIM(Depth_File),status='old')
 !
 !    Need to make file name arbitrary  (kirby, 6/27/16)
 !
          do j = 1,Nglob+1
            read(5,*) (HG(i,j),i=1,Mglob+1)
          enddo
+         close(5)
        endif
 
 ! find permanent dry points (how would this be possible?)
@@ -1862,10 +1886,11 @@
          enddo
          enddo
        else ! not analytical bathymetry, read from depth file
-         open(5,file='depth.txt',status='old')
+         open(5,file=TRIM(Depth_File),status='old')
          do j = 1,Nglob
            read(5,*) (HCG(i,j),i=1,Mglob)
          enddo
+         close(5)
        endif
 	   
 # if defined (PARALLEL)
@@ -3023,30 +3048,36 @@
      if(INITIAL_EUVW) then
 
         ! initial condition for eta
-        open(21,file='eta0.txt',status='old')
+        open(21,file=TRIM(ETA_FILE),status='old')
         do j = 1,Nglob
           read(21,*) (EtaG(i,j),i=1,Mglob)
         enddo
+        close(21)
       
         ! initial condition for U, V, W
-        open(22,file='uvw0.txt',status='old')
+        open(22,file=TRIM(U_FILE),status='old')
         do k = 1,Kglob
         do j = 1,Nglob
           read(22,*) (UG(i,j,k),i=1,Mglob)
         enddo
         enddo
+        close(22)
 
+        open(22,file=TRIM(V_FILE),status='old')
         do k = 1,Kglob
         do j = 1,Nglob
           read(22,*) (VG(i,j,k),i=1,Mglob)
         enddo
         enddo
+        close(22)
 
+        open(22,file=TRIM(U_FILE),status='old')
         do k = 1,Kglob
         do j = 1,Nglob
           read(22,*) (WG(i,j,k),i=1,Mglob)
         enddo
         enddo
+        close(22)
 
 # if defined (PARALLEL)
        do j = Jbeg,Jend
@@ -3232,12 +3263,13 @@
 
      ! read initial salinity field from an input file
      if(INITIAL_SALI) then
-       open(23,file='sali0.txt',status='old')
+       open(23,file=TRIM(S_FILE),status='old')
        do k = 1,Kglob
        do j = 1,Nglob
          read(23,*) (SaliG(i,j,k),i=1,Mglob)
        enddo
        enddo
+       close(23)
 
 # if defined (PARALLEL)
        do j = Jbeg,Jend

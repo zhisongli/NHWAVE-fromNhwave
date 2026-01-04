@@ -5352,14 +5352,13 @@
        enddo
        enddo
      elseif(Iws==2) then
-       open(7,file='wind.txt')
-
+       open(7,file=Trim(Wind_FILE), status='old')
        do j = 1,Nglob
        do i = 1,Mglob
          read(7,*) WUG(i,j),WVG(i,j)
        enddo
        enddo
-
+       close(7)
 # if defined (PARALLEL)
        do j = Jbeg,Jend
        do i = Ibeg,Iend
@@ -10361,14 +10360,14 @@ endif
         if(trim(Veg_Type)=='RIGID') then ! rigid vegetation                                                 
           if(sigc(k)*D(i,j)<=VegH) then
             Umag = sqrt(U(i,j,k)**2+V(i,j,k)**2+W(i,j,k)**2)
-            Prod_v(i,j,k) = 0.5*Vegbv*VegDens*VegDrag*Umag**3
+            Prod_v(i,j,k) = 0.5*StemD*VegDens*VegDrag*Umag**3
           else
             Prod_v(i,j,k) = 0.0
           endif
         else  ! flexible vegetation                                                                          
           if(sigc(k)*D(i,j)<=FVegH(i,j)) then
             Umag = sqrt(U(i,j,k)**2+V(i,j,k)**2+W(i,j,k)**2)
-            Prod_v(i,j,k) = 0.5*Vegbv*VegDens*VegDrag*foliage(i,j)*  &                                       
+            Prod_v(i,j,k) = 0.5*StemD*VegDens*VegDrag*foliage(i,j)*  &                                       
                     VegH/FVegH(i,j)*Umag**3
           else
             Prod_v(i,j,k) = 0.0
