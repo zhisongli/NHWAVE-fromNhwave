@@ -211,6 +211,7 @@ BC_Zn = 1
 ! LEF_BOU - left boundary, solitary wave of Boussinesq
 ! LEF_GRM - left boundary, solitary wave of Grimshaw
 ! INT_BOU - internal wavemaker, solitary wave of Boussinesq
+! INT_GRM - internal wavemaker, solitary wave of Grimshaw
 
 WAVEMAKER = LEF_GRM
 AMP = 0.2

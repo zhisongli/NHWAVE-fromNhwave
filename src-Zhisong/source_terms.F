@@ -21,7 +21,13 @@
      real(SP) :: Segma,Celerity,Wave_Length,Wave_Number,Source_Area,myvar, &
                  WnumX,WnumY,Phs_lag,dfreq,ddir,Angle,tmp1,tmp2,tmp3,tmp4,Umag,Ubar,Vbar
      real(SP) :: Ytrough,Mod1,Zup,Zlow,Zmid,Xstart,Zero1,cnoidal_cn,cnoidal_ck,Atmp
-!
+! 
+
+     real(SP) :: epsOne=Zero, eps2=Zero, eps3=Zero
+     real(SP) :: ss =Zero, ss2 =Zero, ss4 =Zero, ss6 =Zero
+     real(SP) :: tt =Zero, tt2 =Zero, tt4 =Zero
+     real(SP) :: tmpA=Zero, tmpB=Zero, tmpC=Zero, tmpD=Zero
+     
 !  All wave info here needs to be moved to a routine called by initialize except for final calculation
 !  of the source
 
@@ -441,6 +447,111 @@
          endif
        enddo
        enddo
+     endif
+
+     ! internal wavemaker for solitary wave: Grimshaw
+     if(WaveMaker(1:7)=='INT_GRM') then
+        epsOne = Amp_Wave/Dep_Wave
+        eps2 = epsOne * epsOne
+        eps3 = eps2 * epsOne
+
+        ! Celerity = sqrt(Grav*Dep_Wave*(1.0+Amp_Wave/Dep_Wave))
+        Celerity = sqrt(Grav*Dep_Wave) * sqrt(1.0 + epsOne - 1.0/20.0*eps2 - 3.0/70.0*eps3)
+        ! Atmp = sqrt(0.75*Amp_Wave/Dep_Wave**3)
+        Atmp = sqrt(3.0*epsOne/4.0) / Dep_Wave * &
+            (1.0 - 5.0/8.0*epsOne + 71.0/128.0*eps2)
+
+        Xstart = 4.0*Dep_Wave/sqrt(Amp_Wave/Dep_Wave)
+
+        Source_Area = 0.0
+        do i = Ibeg,Iend
+          if(xc(i)>=Xsource_West.and.xc(i)<=Xsource_East) then
+            Source_Area = Source_Area+dx*D(i,Jbeg+1)
+          endif
+        enddo
+ 
+# if defined (PARALLEL)
+        call MPI_ALLREDUCE(Source_Area,myvar,1,MPI_SP,MPI_SUM,MPI_COMM_WORLD,ier) 
+        Source_Area = myvar/float(PY)
+# endif
+ 
+        do j = Jbeg,Jend
+        do i = Ibeg,Iend
+          if(xc(i)>=Xsource_West.and.xc(i)<=Xsource_East.and. &
+             yc(j)>=Ysource_Suth.and.yc(j)<=Ysource_Nrth) then
+            ! SourceC(i,j) = 2.0*Celerity/Source_Area*  &
+            !     Amp_Wave/cosh(Atmp*(Xstart-Celerity*TIME))**2
+                ! zhisong added, start
+                ss = 1.0/cosh(Atmp*(Xstart-Celerity*TIME))
+                ss2 = ss * ss
+                ss4 = ss2 * ss2
+                ss6 = ss4 * ss2
+
+                tt = tanh(Atmp*(Xstart-Celerity*TIME))
+                tt2 = tt * tt
+                tt4 = tt2 * tt2
+                ! zhisong added, end
+                
+                SourceC(i,j) = 2.0*Celerity/Source_Area*  &
+                Amp_Wave * (ss2 - 3.0/4.0*epsOne*ss2*tt2 + eps2*( 5.0/8.0*ss2*tt2 - 101.0/80.0*ss4*tt2))
+
+
+          endif
+        enddo
+        enddo
+      endif
+
+
+      ! internal wavemaker for solitary wave: Fenton
+     if(WaveMaker(1:7)=='INT_FNT') then
+      epsOne = Amp_Wave/Dep_Wave
+      eps2 = epsOne * epsOne
+      eps3 = eps2 * epsOne
+
+      ! Celerity = sqrt(Grav*Dep_Wave*(1.0+Amp_Wave/Dep_Wave))
+      Celerity = sqrt(Grav*Dep_Wave) * sqrt(1.0 + epsOne - 1.0/20.0*eps2 - 3.0/70.0*eps3)
+      ! Atmp = sqrt(0.75*Amp_Wave/Dep_Wave**3)
+      Atmp = sqrt(3.0*epsOne/4.0) / Dep_Wave * &
+          (1.0 - 5.0/8.0*epsOne + 71.0/128.0*eps2)
+
+      Xstart = 4.0*Dep_Wave/sqrt(Amp_Wave/Dep_Wave)
+
+      Source_Area = 0.0
+      do i = Ibeg,Iend
+        if(xc(i)>=Xsource_West.and.xc(i)<=Xsource_East) then
+          Source_Area = Source_Area+dx*D(i,Jbeg+1)
+        endif
+      enddo
+
+# if defined (PARALLEL)
+      call MPI_ALLREDUCE(Source_Area,myvar,1,MPI_SP,MPI_SUM,MPI_COMM_WORLD,ier) 
+      Source_Area = myvar/float(PY)
+# endif
+
+      do j = Jbeg,Jend
+      do i = Ibeg,Iend
+        if(xc(i)>=Xsource_West.and.xc(i)<=Xsource_East.and. &
+           yc(j)>=Ysource_Suth.and.yc(j)<=Ysource_Nrth) then
+          ! SourceC(i,j) = 2.0*Celerity/Source_Area*  &
+          !     Amp_Wave/cosh(Atmp*(Xstart-Celerity*TIME))**2
+              ! zhisong added, start
+              ss = 1.0/cosh(Atmp*(Xstart-Celerity*TIME))
+              ss2 = ss * ss
+              ss4 = ss2 * ss2
+              ss6 = ss4 * ss2
+
+              tt = tanh(Atmp*(Xstart-Celerity*TIME))
+              tt2 = tt * tt
+              tt4 = tt2 * tt2
+              ! zhisong added, end
+              
+              SourceC(i,j) = 2.0*Celerity/Source_Area*  &
+              Amp_Wave * (ss2 - 3.0/4.0*epsOne*ss2*tt2 + eps2*( 5.0/8.0*ss2*tt2 - 101.0/80.0*ss4*tt2))
+
+
+        endif
+      enddo
+      enddo
      endif
 
      ! source terms for momentum eqs.

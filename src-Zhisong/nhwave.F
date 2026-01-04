@@ -5525,6 +5525,8 @@
 # endif
      if((WaveMaker(1:7)=='LEF_SOL').or.(WaveMaker(1:7)=='LEF_BOU')) then
        call solitary_wave_left_boundary
+     elseif(WaveMaker(1:7)=='LEF_GRM') then
+       call solitary_wave_left_boundary_Grimshaw
      elseif(WaveMaker(1:7)=='LEF_LIN') then
        call linear_wave_left_boundary
      elseif(WaveMaker(1:7)=='LEF_CON') then
@@ -10046,7 +10048,7 @@ endif
     real(SP), dimension(:,:), allocatable :: VelGrad,ReynoldStress,Vorticity
     real(SP), dimension(:), allocatable :: Acoef,Bcoef,Ccoef,Xsol,Rhs0
     ! real(SP) :: c1e,c2e,c3e,cmiu,cfk,cfe,Umag,Zdis,X0,Xa,Xn,FricU,Sche,Schk
-    real(SP) :: c1e,c2e,c3e,cmiu,Umag,Zdis,X0,Xa,Xn,FricU,Sche,Schk
+    real(SP) :: c1e,c2e,c3e,cmiu,Umag,Zdis,X0,Xa,Xn,FricU,Sche,Schk ! follow Hu
     real(SP) :: smax,dmax,c_d,c_1,c_2,c_3,delta_nm,Tkeb,Epsb
     real(SP) :: S11,S22,S33,S12,S13,S23
     integer :: i,j,k,n,m,l,g,IVAR,Iter,Nlen,ii
@@ -10092,8 +10094,8 @@ endif
 !       c2e = 1.92
        c3e = 0.0
        cmiu = 0.085
-       cfk = 1.0
-       cfe = 1.33
+      !  cfk = 1.0
+      !  cfe = 1.33
        Sche = 0.72
        Schk = 0.72
     else
@@ -10102,8 +10104,8 @@ endif
 !     c3e = -1.4
        c3e = 0.0
        cmiu = 0.09
-       cfk = 1.0
-       cfe = 1.33
+      !  cfk = 1.0
+      !  cfe = 1.33
        Sche = 1.3
        Schk = 1.0
     endif

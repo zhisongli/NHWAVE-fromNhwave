@@ -903,4 +903,117 @@
      end subroutine solitary_wave_left_boundary
 
 
+    !--------------------------------------------------------------------------------------------------------------
+!
+!    Subroutine solitary_wave_left_boundary_Grimshaw
+!
+!    Used to specify solitary wave on left boundary
+!
+!    Called by:  update_bc
+!
+!    Last update: 
+!        06/11/2024, Zhisong Li , Grimshaw solitary
+!                
+!
+!-------------------------------------------------------------------------------------------------------------
+!
+      subroutine solitary_wave_left_boundary_Grimshaw
+  !
+      use global, only: SP,Zero,pi,Ibeg,Grav,TIME,Nloc,Kloc,Amp_Wave,Dep_Wave, &
+                      Ein_X0,Din_X0,Uin_X0,Vin_X0,Win_X0,Hfx,Kbeg,Kend,sigc,BC_X0
+      implicit none
+      integer  :: j,k
+      real(SP) :: Celerity,Atmp,Xstart,C2,D1,D2,D3,Zlev,Xc
+      
+      real(SP) :: eps=Zero, eps2=Zero, eps3=Zero
+      real(SP) :: ss =Zero, ss2 =Zero, ss4 =Zero, ss6 =Zero
+      real(SP) :: tt =Zero, tt2 =Zero, tt4 =Zero
+      real(SP) :: tmpA=Zero, tmpB=Zero, tmpC=Zero, tmpD=Zero
+      
+
+      Uin_X0 = Zero
+      Vin_X0 = Zero
+      Win_X0 = Zero
+
+      eps = Amp_Wave/Dep_Wave
+      eps2 = eps * eps
+      eps3 = eps2 * eps
+      
+      ! Atmp = sqrt(0.75*Amp_Wave/Dep_Wave**3)
+      Atmp = sqrt(3.0*eps/4.0) / Dep_Wave * (1.0 - 5.0/8.0*eps + 71.0/128.0*eps2)
+      ! Celerity = sqrt(Grav*Dep_Wave*(1.0+Amp_Wave/Dep_Wave))
+      Celerity = sqrt(Grav*Dep_Wave) * sqrt(1.0 + eps - 1.0/20.0*eps2 - 3.0/70.0*eps3)
+      
+      Xstart = 4.0*Dep_Wave/sqrt(Amp_Wave/Dep_Wave)
+      Xc = Xstart-Celerity*TIME
+      ! zhisong added, start
+      ss = 1.0/cosh(Atmp*Xc)
+      ss2 = ss * ss
+      ss4 = ss2 * ss2
+      ss6 = ss4 * ss2
+
+      tt = tanh(Atmp*Xc)
+      tt2 = tt * tt
+      tt4 = tt2 * tt2
+      ! zhisong added, end
+
+      do j = 1,Nloc
+      
+          ! Ein_X0(j) = Amp_Wave/cosh(Atmp*Xc)**2
+          ! Ein_X0(j) = Dep_Wave * (eps*ss2 - 0.75*eps2*ss2*tt2 + eps3*(5.0/8.0*ss2*tt2 - 101.0/80.0*ss4*tt2))
+          Ein_X0(j) =  Amp_Wave * (ss2 - 3.0/4.0*eps*ss2*tt2 + eps2*( 5.0/8.0*ss2*tt2 - 101.0/80.0*ss4*tt2))
+
+          Din_X0(j) = Ein_X0(j)+Hfx(Ibeg,j)
+      
+          C2 = sqrt(Grav*Dep_Wave)
+          ! D1 = -2.0*Amp_Wave*sinh(Atmp*Xc)*Atmp/cosh(Atmp*Xc)**3
+          ! D2 = 2.0*Amp_Wave*Atmp**2*(2.0*cosh(Atmp*Xc)**2-3.)/cosh(Atmp*Xc)**4
+          ! D3 = -8.0*Amp_Wave*sinh(Atmp*Xc)*Atmp**3*(cosh(Atmp*Xc)**2-3.)/cosh(Atmp*Xc)**5
+          do k = Kbeg,Kend
+              Zlev = sigc(k)*Din_X0(j)
+              ! Uin_X0(j,k) = C2*Ein_X0(j)/Dep_Wave*(1.0-1.0/4.0*Ein_X0(j)/Dep_Wave+Dep_Wave/3.0*(Dep_Wave/Ein_X0(j))*  &
+              !                 (1.0-3.0/2.0*Zlev**2/Dep_Wave**2)*D2)
+              ! tmpA = eps*ss2 -eps2*(-0.25*ss2 + ss4 + Zlev**2 * (1.5*ss2 - 2.25*ss4))
+              ! tmpB = -(19.0/40.0*ss2 + 1.0/5.0*ss4 - 6.0/5.0*ss6)
+              ! tmpC = -Zlev**2 * (-3.0/2.0*ss2 - 15.0/4.0*ss4 + 15.0/2.0*ss6)
+              ! tmpD = -Zlev**4 * (-3.0/8.0*ss2 + 45.0/16.0*ss4 -45.0/16.0*ss6)
+              ! Uin_X0(j,k) = C2 * (tmpA + eps3*(tmpB+tmpC+tmpD))
+              
+              Uin_X0(j,k) = ss2*eps - eps2*(-1.0/4.0*ss2 + ss4 + Zlev**2 *(3.0/2.0*ss2 - 9.0/4.0*ss4))&
+              - eps3*( &
+                  19.0/40.0*ss2 + 1.0/5.0*ss4 - 6.0/5.0*ss6 &
+                  + Zlev**2 * ( -3.0/2.0*ss2 - 15.0/4.0*ss4 + 15.0/2.0*ss6 ) &
+                  + Zlev**4 * ( -3.0/8.0*ss2 + 45.0/16.0*ss4 - 45.0/16.0*ss6 ) )
+              
+              Uin_X0(j,k) = Uin_X0(j,k) * C2
+
+              ! Win_X0(j,k) = -C2*Zlev/Dep_Wave*((1.0-1.0/2.0*Ein_X0(j)/Dep_Wave)*D1+1.0/3.0*Dep_Wave**2*  &
+              !                 (1.0-1.0/2.0*Zlev**2/Dep_Wave**2)*D3)
+              ! tmpA = -eps*ss2 + eps2*(3.0/8.0*ss2 + 2.0*ss4 + Zlev**2*(1.0/2.0*ss2 - 3.0/2.0*ss4))
+              ! tmpB = 49.0/640.0*ss2 - 17.0/20.0*ss4 - 18.0/5.0*ss6
+              ! tmpC = Zlev**2 * (-13.0/16.0*ss2 - 25.0/16.0*ss4 + 15.0/2.0*ss6)
+              ! tmpD = Zlev**4 * ( -3.0/40.0*ss2 + 9.0/8.0*ss4   - 27.0/16.0*ss6)
+              ! Win_X0(j,k) = -C2 * sqrt(3.0*eps) * Zlev * tt * (tmpA + eps3*(tmpB+tmpC+tmpD))
+
+              Win_X0(j,k) = -sqrt(3.0*eps)*(Zlev)*tt* &
+                  (&  
+                  - eps*ss2 + eps2*(3.0/8.0*ss2 + 2.0*ss4 + (Zlev**2)*(1.0/2.0*ss2 - 3.0/2.0*ss4 ))&
+                  + (eps3)* &
+                  ( &
+                      49.0/640.0*ss2 - 17.0/20.0*ss4- 18.0/5.0*ss6 &
+                      + (Zlev**2)*(-13.0/16.0*ss2 - 25.0/16.0*ss4 + 15.0/2.0*ss6 )&
+                      + (Zlev**4)*(-3.0/40.0*ss2+9.0/8.0*ss4-27.0/16.0*ss6 ) &
+                  ))
+
+              Win_X0(j,k) = Win_X0(j,k) * C2
+              
+              
+              Vin_X0(j,k) = 0.0
+          enddo
+      enddo
+
+      end subroutine solitary_wave_left_boundary_Grimshaw
+
+
+
 
