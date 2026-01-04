@@ -3816,10 +3816,10 @@
        do k = Kbeg,Kend
        do j = Jbeg,Jend
        do i = Ibeg,Iend
-         tmp1 = dx**2/(abs(CmuHt(i,j,k))+1.e-16)
+         tmp1 = dx**2/(abs(CmuHt(i,j,k))+Small)
          if(tmp1<tmp2) tmp2 = tmp1
 
-         tmp1 = dy**2/(abs(CmuHt(i,j,k))+1.e-16)
+         tmp1 = dy**2/(abs(CmuHt(i,j,k))+Small)
          if(tmp1<tmp2) tmp2 = tmp1
        enddo
        enddo
@@ -4043,19 +4043,19 @@
          enddo
        elseif(Bc_Xn==6) then
          do i = 1,Nghost
-!           Cg = -(U0(Iend+i-1,j,k)-U00(Iend+i-1,j,k)+1.e-16)/  &
-!                 (U00(Iend+i-1,j,k)-U00(Iend+i-2,j,k)+1.e-16)
+!           Cg = -(U0(Iend+i-1,j,k)-U00(Iend+i-1,j,k)+Small)/  &
+!                 (U00(Iend+i-1,j,k)-U00(Iend+i-2,j,k)+Small)
            Cg = sqrt(Grav*D(Iend,j))*dt/dx
            Cg = max(min(Cg,1.0),0.0)
            U(Iend+i,j,k) = Cg*U0(Iend+i-1,j,k)+(1.0-Cg)*U0(Iend+i,j,k)
 
-!           Cg =-(V0(Iend+i-1,j,k)-V00(Iend+i-1,j,k)+1.e-16)/  &
-!                 (V00(Iend+i-1,j,k)-V00(Iend+i-2,j,k)+1.e-16)
+!           Cg =-(V0(Iend+i-1,j,k)-V00(Iend+i-1,j,k)+Small)/  &
+!                 (V00(Iend+i-1,j,k)-V00(Iend+i-2,j,k)+Small)
 !           Cg= max(min(Cg,1.0),0.0)
            V(Iend+i,j,k) = Cg*V0(Iend+i-1,j,k)+(1.0-Cg)*V0(Iend+i,j,k)
            
-!           Cg =-(W0(Iend+i-1,j,k)-W00(Iend+i-1,j,k)+1.e-16)/  &
-!                 (W00(Iend+i-1,j,k)-W00(Iend+i-2,j,k)+1.e-16)
+!           Cg =-(W0(Iend+i-1,j,k)-W00(Iend+i-1,j,k)+Small)/  &
+!                 (W00(Iend+i-1,j,k)-W00(Iend+i-2,j,k)+Small)
 !           Cg= max(min(Cg,1.0),0.0)
            W(Iend+i,j,k) = Cg*W0(Iend+i-1,j,k)+(1.0-Cg)*W0(Iend+i,j,k)
 
@@ -4550,8 +4550,8 @@
            !V(Iend+i,j,k) = 2.0*Vin_Xn(j,k)-V(Iend-i+1,j,k)
            !W(Iend+i,j,k) = 2.0*Win_Xn(j,k)-W(Iend-i+1,j,k)
 		   ! Changed by Cheng to combine Orlanski open boundary condition
-           Cg = -(U0(Iend+i-1,j,k)-U00(Iend+i-1,j,k)+1.e-16)/  &
-                 (U00(Iend+i-1,j,k)-U00(Iend+i-2,j,k)+1.e-16)
+           Cg = -(U0(Iend+i-1,j,k)-U00(Iend+i-1,j,k)+Small)/  &
+                 (U00(Iend+i-1,j,k)-U00(Iend+i-2,j,k)+Small)
 !           Cg = sqrt(Grav*D(Iend,j))*dt/dx
            Cg = max(min(Cg,1.0),0.0)
 		   if (i==1) then
@@ -4559,12 +4559,12 @@
 		   else
 		     U(Iend+i,j,k) = Cg*U(Iend+i-1,j,k)+(1.0-Cg)*U(Iend+i,j,k)
 		   endif
-           Cg =-(V0(Iend+i-1,j,k)-V00(Iend+i-1,j,k)+1.e-16)/  &
-                 (V00(Iend+i-1,j,k)-V00(Iend+i-2,j,k)+1.e-16)
+           Cg =-(V0(Iend+i-1,j,k)-V00(Iend+i-1,j,k)+Small)/  &
+                 (V00(Iend+i-1,j,k)-V00(Iend+i-2,j,k)+Small)
            Cg= max(min(Cg,1.0),0.0)
            V(Iend+i,j,k) = Cg*V0(Iend+i-1,j,k)+(1.0-Cg)*V0(Iend+i,j,k)
-           Cg =-(W0(Iend+i-1,j,k)-W00(Iend+i-1,j,k)+1.e-16)/  &
-                 (W00(Iend+i-1,j,k)-W00(Iend+i-2,j,k)+1.e-16)
+           Cg =-(W0(Iend+i-1,j,k)-W00(Iend+i-1,j,k)+Small)/  &
+                 (W00(Iend+i-1,j,k)-W00(Iend+i-2,j,k)+Small)
            Cg= max(min(Cg,1.0),0.0)
            W(Iend+i,j,k) = Cg*W0(Iend+i-1,j,k)+(1.0-Cg)*W0(Iend+i,j,k)
            DU(Iend+i,j,k) = 2.0*Din_Xn(j)*Uin_Xn(j,k)-DU(Iend-i+1,j,k)
@@ -4599,19 +4599,19 @@
        elseif(Bc_Xn==6) then
          do i = 1,Nghost
 		 ! Changed by Cheng from Sommerfeld to Orlanski open boundary condition
-           Cg = -(U0(Iend+i-1,j,k)-U00(Iend+i-1,j,k)+1.e-16)/  &
-                 (U00(Iend+i-1,j,k)-U00(Iend+i-2,j,k)+1.e-16)
+           Cg = -(U0(Iend+i-1,j,k)-U00(Iend+i-1,j,k)+Small)/  &
+                 (U00(Iend+i-1,j,k)-U00(Iend+i-2,j,k)+Small)
 !           Cg = sqrt(Grav*D(Iend,j))*dt/dx
            Cg = max(min(Cg,1.0),0.0)
            U(Iend+i,j,k) = Cg*U0(Iend+i-1,j,k)+(1.0-Cg)*U0(Iend+i,j,k)
 
-           Cg =-(V0(Iend+i-1,j,k)-V00(Iend+i-1,j,k)+1.e-16)/  &
-                 (V00(Iend+i-1,j,k)-V00(Iend+i-2,j,k)+1.e-16)
+           Cg =-(V0(Iend+i-1,j,k)-V00(Iend+i-1,j,k)+Small)/  &
+                 (V00(Iend+i-1,j,k)-V00(Iend+i-2,j,k)+Small)
            Cg= max(min(Cg,1.0),0.0)
            V(Iend+i,j,k) = Cg*V0(Iend+i-1,j,k)+(1.0-Cg)*V0(Iend+i,j,k)
            
-           Cg =-(W0(Iend+i-1,j,k)-W00(Iend+i-1,j,k)+1.e-16)/  &
-                 (W00(Iend+i-1,j,k)-W00(Iend+i-2,j,k)+1.e-16)
+           Cg =-(W0(Iend+i-1,j,k)-W00(Iend+i-1,j,k)+Small)/  &
+                 (W00(Iend+i-1,j,k)-W00(Iend+i-2,j,k)+Small)
            Cg= max(min(Cg,1.0),0.0)
            W(Iend+i,j,k) = Cg*W0(Iend+i-1,j,k)+(1.0-Cg)*W0(Iend+i,j,k)
 
@@ -5183,8 +5183,8 @@
          do i = 1,Nghost
          ! D(Iend+i,j) = 2.0*Din_Xn(j)-D(Iend-i+1,j)
 		 ! Changed by Cheng to combine Orlanski open boundary condition
-           Cg =-(Eta0(Iend+i-1,j)-Eta00(Iend+i-1,j)+1.e-16)/  &
-                 (Eta00(Iend+i-1,j)-Eta00(Iend+i-2,j)+1.e-16)
+           Cg =-(Eta0(Iend+i-1,j)-Eta00(Iend+i-1,j)+Small)/  &
+                 (Eta00(Iend+i-1,j)-Eta00(Iend+i-2,j)+Small)
 !           Cg = sqrt(Grav*D(Iend,j))*dt/dx
            Cg= max(min(Cg,1.0),0.0)  
            Eta(Iend+i,j) = Cg*Eta0(Iend+i-1,j)+(1.0-Cg)*Eta0(Iend+i,j)
@@ -5197,8 +5197,8 @@
        elseif(Bc_Xn==6) then 
          do i = 1,Nghost
 		 ! Changed by Cheng from Sommerfeld to Orlanski open boundary condition 
-           Cg =-(Eta0(Iend+i-1,j)-Eta00(Iend+i-1,j)+1.e-16)/  &
-                 (Eta00(Iend+i-1,j)-Eta00(Iend+i-2,j)+1.e-16)
+           Cg =-(Eta0(Iend+i-1,j)-Eta00(Iend+i-1,j)+Small)/  &
+                 (Eta00(Iend+i-1,j)-Eta00(Iend+i-2,j)+Small)
 !           Cg = sqrt(Grav*D(Iend,j))*dt/dx
            Cg= max(min(Cg,1.0),0.0)  
            Eta(Iend+i,j) = Cg*Eta0(Iend+i-1,j)+(1.0-Cg)*Eta0(Iend+i,j)
@@ -5664,8 +5664,8 @@
        !! Ein_Xn(j) = 0.0
        !Din_Xn(j) = Ein_Xn(j)+Hfx(Iend+1,j)
 	   ! Changed by Cheng to combine Orlanski open boundary condition
-       Cg =-(Eta0(Iend,j)-Eta00(Iend,j)+1.e-16)/  &
-             (Eta00(Iend,j)-Eta00(Iend-1,j)+1.e-16)
+       Cg =-(Eta0(Iend,j)-Eta00(Iend,j)+Small)/  &
+             (Eta00(Iend,j)-Eta00(Iend-1,j)+Small)
 !       Cg = sqrt(Grav*D(Iend,j))*dt/dx
        Cg= max(min(Cg,1.0),0.0)
        Ein_Xn(j) = (Cg*Eta0(Iend,j)+(1.0-Cg)*Eta0(Iend+1,j)+Eta(Iend,j))/2.0
@@ -5681,16 +5681,16 @@
        !Win_Xn(j,k) = 0.0
        !Vin_Xn(j,k) = 0.0
 	   ! Changed by Cheng to combine Orlanski open boundary condition
-       Cg = -(U0(Iend,j,k)-U00(Iend,j,k)+1.e-16)/  &
-             (U00(Iend,j,k)-U00(Iend-1,j,k)+1.e-16)
+       Cg = -(U0(Iend,j,k)-U00(Iend,j,k)+Small)/  &
+             (U00(Iend,j,k)-U00(Iend-1,j,k)+Small)
        Cg = max(min(Cg,1.0),0.0)
        Uin_Xn(j,k) = (Cg*U(Iend,j,k)+Uin_Xni0(j,k)-Cg*Uin_Xni(j,k)+U(Iend,j,k))/2.0
-       Cg =-(V0(Iend,j,k)-V00(Iend,j,k)+1.e-16)/  &
-             (V00(Iend,j,k)-V00(Iend-1,j,k)+1.e-16)
+       Cg =-(V0(Iend,j,k)-V00(Iend,j,k)+Small)/  &
+             (V00(Iend,j,k)-V00(Iend-1,j,k)+Small)
        Cg= max(min(Cg,1.0),0.0)
        Vin_Xn(j,k) = (Cg*V0(Iend,j,k)+(1.0-Cg)*V0(Iend+1,j,k)+V(Iend,j,k))/2.0
-       Cg =-(W0(Iend,j,k)-W00(Iend,j,k)+1.e-16)/  &
-             (W00(Iend,j,k)-W00(Iend-1,j,k)+1.e-16)
+       Cg =-(W0(Iend,j,k)-W00(Iend,j,k)+Small)/  &
+             (W00(Iend,j,k)-W00(Iend-1,j,k)+Small)
        Cg= max(min(Cg,1.0),0.0)
        Win_Xn(j,k) = (Cg*W0(Iend,j,k)+(1.0-Cg)*W0(Iend+1,j,k)+W(Iend,j,k))/2.0
 
@@ -7809,7 +7809,7 @@ endif
 !-------------------------------------------------------
 !   HLPA scheme
 !-------------------------------------------------------
-    use global, only: SP,Zero
+    use global, only: SP,Zero,Small
     implicit none
     real(SP), intent(in)  :: Uw,Fww,Fw,Fp,Fe
     real(SP) :: hlpa,Alpha_pl,Alpha_mn
@@ -7821,7 +7821,7 @@ endif
         Alpha_pl = 0.0
       endif
 
-      if(abs(Fp-Fww)<=1.e-16) then
+      if(abs(Fp-Fww)<=Small) then
         hlpa = Fw
       else
         hlpa = Fw+Alpha_pl*(Fp-Fw)*(Fw-Fww)/(Fp-Fww)
@@ -7835,7 +7835,7 @@ endif
         Alpha_mn = 0.0
       endif
 
-      if(abs(Fw-Fe)<=1.e-16) then
+      if(abs(Fw-Fe)<=Small) then
         hlpa = Fp
       else
         hlpa = Fp+Alpha_mn*(Fw-Fp)*(Fp-Fe)/(Fw-Fe)
@@ -8260,7 +8260,7 @@ endif
     do k = 1,Kloc
     do j = 1,Nloc
     do i = 1,Mloc
-      Smag_Const(i,j,k) = 0.5*(-LijMij(i,j,k))/(MijMij(i,j,k)+1.e-16)
+      Smag_Const(i,j,k) = 0.5*(-LijMij(i,j,k))/(MijMij(i,j,k)+Small)
       Filter_Width(i,j,k) = (dx*dy*D(i,j)*dsig(k))**(1./3.)
       Smag_Const(i,j,k) = Smag_Const(i,j,k)/Filter_Width(i,j,k)**2
       if(Smag_Const(i,j,k)<0.0) Smag_Const(i,j,k) = 0.0
@@ -9612,7 +9612,7 @@ endif
     do j = Jbeg,Jend
     do k = Kbeg,Kend
       if(Prod_s(i,j,k)>Zero) then
-        Richf(i,j,k) = -Prod_b(i,j,k)/(Prod_s(i,j,k)+1.0e-16)
+        Richf(i,j,k) = -Prod_b(i,j,k)/(Prod_s(i,j,k)+Small)
         Richf(i,j,k) = dmax1(0.0,dmin1(0.21,Richf(i,j,k)))
       endif
     enddo
@@ -9683,7 +9683,7 @@ endif
           Umag = sqrt(U(i,j,k)**2+V(i,j,k)**2+W(i,j,k)**2)
           Tke_Inf = 3.7*(1.0-Porosity(i,j,k))*Porosity(i,j,k)**1.5*Umag**2
           Eps_Inf = 39.0*(1.0-Porosity(i,j,k))**2.5*Porosity(i,j,k)**2*Umag**3/D50_por
-          R5(i,j,k) = R5(i,j,k)+D(i,j)*c2e*Eps_Inf**2/(Tke_Inf+1.e-16)
+          R5(i,j,k) = R5(i,j,k)+D(i,j)*c2e*Eps_Inf**2/(Tke_Inf+Small)
        endif
 # endif
 
@@ -10045,7 +10045,8 @@ endif
     real(SP), dimension(:,:,:), allocatable :: R5,DelzR,Tke_Old,Eps_Old,DUfs,DVfs,Wfs
     real(SP), dimension(:,:), allocatable :: VelGrad,ReynoldStress,Vorticity
     real(SP), dimension(:), allocatable :: Acoef,Bcoef,Ccoef,Xsol,Rhs0
-    real(SP) :: c1e,c2e,c3e,cmiu,cfk,cfe,Umag,Zdis,X0,Xa,Xn,FricU,Sche,Schk
+    ! real(SP) :: c1e,c2e,c3e,cmiu,cfk,cfe,Umag,Zdis,X0,Xa,Xn,FricU,Sche,Schk
+    real(SP) :: c1e,c2e,c3e,cmiu,Umag,Zdis,X0,Xa,Xn,FricU,Sche,Schk
     real(SP) :: smax,dmax,c_d,c_1,c_2,c_3,delta_nm,Tkeb,Epsb
     real(SP) :: S11,S22,S33,S12,S13,S23
     integer :: i,j,k,n,m,l,g,IVAR,Iter,Nlen,ii
@@ -10332,7 +10333,7 @@ endif
     do j = Jbeg,Jend
     do k = Kbeg,Kend
       if(Prod_s(i,j,k)>Zero) then
-        Richf(i,j,k) = -Prod_b(i,j,k)/(Prod_s(i,j,k)+1.0e-16)
+        Richf(i,j,k) = -Prod_b(i,j,k)/(Prod_s(i,j,k)+Small)
         Richf(i,j,k) = dmax1(0.0,dmin1(0.21,Richf(i,j,k)))
       endif
     enddo
@@ -11907,7 +11908,7 @@ endif
     do i = 1,Mloc
       do g = 1,Mg
         Vbg(i,j,k) = Vbg(i,j,k)+4./3.*pi*Rbg(g)**3*Nbg(i,j,k,g)
-        if(abs(Vbg(i,j,k))<1.e-16) Vbg(i,j,k) = 0.0
+        if(abs(Vbg(i,j,k))<Small) Vbg(i,j,k) = 0.0
         Vbg(i,j,k) = min(0.4,Vbg(i,j,k))
       enddo
     enddo

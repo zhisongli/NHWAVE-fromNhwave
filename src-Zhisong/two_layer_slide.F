@@ -245,9 +245,9 @@
       
       Umag = sqrt(Ua(i,j)**2+Va(i,j)**2)
       SorceaX(i,j) = SorceaX(i,j)-(1.0-Slambda(i,j))*Grav_Lz(i,j)*Ha(i,j)*  &
-                       tan(PhiBed)*Ua(i,j)/(Umag+1.e-16)
+                       tan(PhiBed)*Ua(i,j)/(Umag+Small)
       SorceaY(i,j) = SorceaY(i,j)-(1.0-Slambda(i,j))*Grav_Lz(i,j)*Ha(i,j)*  &
-                       tan(PhiBed)*Va(i,j)/(Umag+1.e-16)
+                       tan(PhiBed)*Va(i,j)/(Umag+Small)
 
       Sxy = 0.5*(DelyUa(i,j)+DelxVa(i,j))
       if(Sxy.ne.0.0) then

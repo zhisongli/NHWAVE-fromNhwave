@@ -363,7 +363,7 @@
           numer = 0.0
           denom = 0.0
           do l = 1,count
-            if (target_dist(l)<1.e-16) then
+            if (target_dist(l)<Small) then
               force_vel = target_vel(l)
               goto 1
             else
@@ -480,7 +480,7 @@
           numer = 0.0
           denom = 0.0
           do l = 1,count
-            if (target_dist(l)<1.e-16) then
+            if (target_dist(l)<Small) then
               force_vel = target_vel(l)
               goto 2
             else
@@ -596,7 +596,7 @@
           numer = 0.0
           denom = 0.0
           do l = 1,count
-            if (target_dist(l)<1.e-16) then
+            if (target_dist(l)<Small) then
               force_vel = target_vel(l)
               goto 3
             else
