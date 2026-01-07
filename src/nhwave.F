@@ -13532,7 +13532,7 @@ SUBROUTINE hot_start
 ! uvw
 
 
-     call vel_bc
+     call vel_bc(1)
 # if defined (PARALLEL)
      call phi_3D_exch(U)
      call phi_3D_exch(V)
