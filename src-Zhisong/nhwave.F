@@ -10047,7 +10047,7 @@ endif
     real(SP), dimension(:,:,:), allocatable :: R5,DelzR,Tke_Old,Eps_Old,DUfs,DVfs,Wfs
     real(SP), dimension(:,:), allocatable :: VelGrad,ReynoldStress,Vorticity
     real(SP), dimension(:), allocatable :: Acoef,Bcoef,Ccoef,Xsol,Rhs0
-    ! real(SP) :: c1e,c2e,c3e,cmiu,cfk,cfe,Umag,Zdis,X0,Xa,Xn,FricU,Sche,Schk
+    !real(SP) :: c1e,c2e,c3e,cmiu,cfk,cfe,Umag,Zdis,X0,Xa,Xn,FricU,Sche,Schk
     real(SP) :: c1e,c2e,c3e,cmiu,Umag,Zdis,X0,Xa,Xn,FricU,Sche,Schk ! follow Hu
     real(SP) :: smax,dmax,c_d,c_1,c_2,c_3,delta_nm,Tkeb,Epsb
     real(SP) :: S11,S22,S33,S12,S13,S23

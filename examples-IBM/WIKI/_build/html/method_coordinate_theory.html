@@ -1,0 +1,190 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>New s-Coordinate &#8212; NHWAVE WIKI 0.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Implementation of s-coordinate" href="method_coordinate_implementation.html" />
+    <link rel="prev" title="S-coordinate System" href="method_coordinate.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="new-s-coordinate">
+<h1>New s-Coordinate<a class="headerlink" href="#new-s-coordinate" title="Permalink to this headline">¶</a></h1>
+<p>According to Kirby et al. (2022, in preparation), the governing equations in a generalized <span class="math notranslate nohighlight">\(s\)</span>-system <span class="math notranslate nohighlight">\((x,y,s,t)\)</span>, with a range <span class="math notranslate nohighlight">\(0 \leq s \leq 1\)</span> that preserves the boundary locations from the <span class="math notranslate nohighlight">\(\sigma\)</span> coordinate mapping, can be expressed by</p>
+<div class="math notranslate nohighlight" id="equation-mass">
+<span class="eqno">(1)<a class="headerlink" href="#equation-mass" title="Permalink to this equation">¶</a></span>\[D_{,t} + ( D u_\alpha )_{,\alpha} + \tilde{\omega}_{,s}  =  \Gamma_s\]</div>
+<p>and</p>
+<div class="math notranslate nohighlight" id="equation-momx">
+<span class="eqno">(2)<a class="headerlink" href="#equation-momx" title="Permalink to this equation">¶</a></span>\[(D u_\alpha)_{,t} + (D u_\alpha u_\beta + \frac{1}{2} gD^2 \delta_{\alpha\beta} )_{,\beta} + (u_\alpha \tilde{\omega})_{,s} =  S_{q\alpha} + S_{h\alpha} + u_\alpha \Gamma_s\]</div>
+<div class="math notranslate nohighlight" id="equation-momz">
+<span class="eqno">(3)<a class="headerlink" href="#equation-momz" title="Permalink to this equation">¶</a></span>\[(Dw)_{,t} + (D u_\beta w)_{,\beta} + (w\tilde{\omega})_{,s}  =  S_{qz} + w \Gamma_s\]</div>
+<p>The modified normal velocity <span class="math notranslate nohighlight">\(\tilde{\omega}\)</span> is given by</p>
+<div class="math notranslate nohighlight" id="equation-omega">
+<span class="eqno">(4)<a class="headerlink" href="#equation-omega" title="Permalink to this equation">¶</a></span>\[ \tilde{\omega} = D ( s_{,t} + u_\alpha s_{,\alpha} + w s_{,z} )\]</div>
+<p>and the inhomogeneous term <span class="math notranslate nohighlight">\(\Gamma_s\)</span> is given by</p>
+<div class="math notranslate nohighlight" id="equation-gamma-s">
+<span class="eqno">(5)<a class="headerlink" href="#equation-gamma-s" title="Permalink to this equation">¶</a></span>\[\Gamma_s = D_{,t} + u_\alpha D_{,\alpha} + D [ (s_{,t})_{,s} + u_\alpha (s_{,\alpha})_{,s} + w (s_{,z})_{,s} ]\]</div>
+<p>or</p>
+<div class="math notranslate nohighlight" id="equation-gamma-s1">
+<span class="eqno">(6)<a class="headerlink" href="#equation-gamma-s1" title="Permalink to this equation">¶</a></span>\[\begin{split}\Gamma_s = &amp; D_{,t} + u_\alpha D_{,\alpha} + \tilde{\omega}_{,s} - D (u_{\alpha,s} s_{,\alpha} + w_{,s} s_{,z}) \\
+    =&amp; D_{,t} + (u_\alpha D)_{,\alpha} + \tilde{\omega}_{,s}\end{split}\]</div>
+<p>which is the extended forms of <a class="reference internal" href="#equation-mass">(1)</a>. The current version of NHWAVE calculates the normal velocity <span class="math notranslate nohighlight">\(\omega\)</span> (<span class="math notranslate nohighlight">\(\tilde{\omega}\)</span> here) using <a class="reference internal" href="#equation-mass">(1)</a> (<span class="math notranslate nohighlight">\(\Gamma_s\)</span> = 0), following the method used in typical hydrostatic ocean models such as ROMS and FVCOM. The method won’t work because <span class="math notranslate nohighlight">\(\Gamma_s = 0\)</span> may not hold for a generic s-coordinate. In this study, we calculate <span class="math notranslate nohighlight">\(\tilde{\omega}\)</span> using <a class="reference internal" href="#equation-omega">(4)</a> and solve <span class="math notranslate nohighlight">\(\Gamma_s\)</span> using <a class="reference internal" href="#equation-mass">(1)</a>.</p>
+<p>To get the pressure Poisson equation, we substitute the pressure-corrected velocities</p>
+<div class="math notranslate nohighlight">
+\[u^{(k)} = u^* - \frac{\Delta t}{\rho} (\frac{\partial p}{\partial x} + \frac{\partial p}{\partial s}\frac{\partial s}{\partial x^*})^{(k)}\]</div>
+<div class="math notranslate nohighlight">
+\[v^{(k)} = v^* - \frac{\Delta t}{\rho} (\frac{\partial p}{\partial y} + \frac{\partial p}{\partial s}\frac{\partial s}{\partial y^*})^{(k)}\]</div>
+<div class="math notranslate nohighlight">
+\[w^{(k)} = w^* - \frac{\Delta t}{\rho} \frac{\partial s}{\partial z^*} (\frac{\partial p}{\partial s})^{(k)}\]</div>
+<p>into the 3D mass conservation equation</p>
+<div class="math notranslate nohighlight">
+\[\frac{\partial u}{\partial x} + \frac{\partial u}{\partial s} \frac{\partial s}{\partial x^*} + \frac{\partial v}{\partial y} + \frac{\partial v}{\partial s} \frac{\partial s}{\partial y^*} + \frac{\partial s}{\partial z^*} \frac{\partial w}{\partial s} = 0\]</div>
+<p>resulting in</p>
+<div class="math notranslate nohighlight" id="equation-pressure">
+<span class="eqno">(7)<a class="headerlink" href="#equation-pressure" title="Permalink to this equation">¶</a></span>\[\begin{split}\frac{\partial}{\partial x} \left [ \frac{\partial p}{\partial x}+\frac{\partial p}{\partial s} \frac{\partial s}{\partial x^*} \right ] &amp; +  \frac{\partial}{\partial y} \left [ \frac{\partial p}{\partial y}+\frac{\partial p}{\partial s} \frac{\partial s}{\partial y^*} \right ] + \frac{\partial }{\partial s} \left ( \frac{\partial p}{\partial x} \right) \frac{\partial s}{\partial x^*} + \frac{\partial }{\partial s} \left ( \frac{\partial p}{\partial y} \right) \frac{\partial s}{\partial y^*} \\ &amp; +  \left[  \left (\frac{\partial s}{\partial x^*} \right )^2+\left ( \frac{\partial s}{\partial y^*} \right )^2+ \underline{(\frac{\partial s}{\partial z^*})^2}  \right] \frac{\partial }{\partial s} \left( \frac{\partial p}{\partial s} \right) \\ &amp;= \frac{\rho}{\Delta t} \left( \frac{\partial u^*}{\partial x} +\frac{\partial u^*}{\partial s} \frac{\partial s}{\partial x^*} + \frac{\partial v^*}{\partial y} +\frac{\partial v^*}{\partial s} \frac{\partial s}{\partial y^*} + \underline{\frac{\partial s}{\partial z^*}} \frac{\partial w^*}{\partial s} \right)\end{split}\]</div>
+<p><span class="math notranslate nohighlight">\(\underline{()}\)</span> represents modifications needed for the new s-coordinate.</p>
+<div class="admonition important">
+<p class="first admonition-title">Important</p>
+<p class="last">We use the original definition <span class="math notranslate nohighlight">\(sig\)</span> in the code to present ‘s-coordinate’. <span class="math notranslate nohighlight">\(sig\)</span> is discretized with equal spacing from 0 to 1.0. The relation between <span class="math notranslate nohighlight">\(sig\)</span> and <span class="math notranslate nohighlight">\(s\)</span> can be expressed by <span class="math notranslate nohighlight">\(s = f (sig)\)</span>. Introduce <span class="math notranslate nohighlight">\(z_s\)</span> function, which represents the location of <span class="math notranslate nohighlight">\(s\)</span> in the physical domain, i.e., <span class="math notranslate nohighlight">\(z_s = D\cdot s\)</span>, where <span class="math notranslate nohighlight">\(D\)</span> is the total water depth <span class="math notranslate nohighlight">\(D = h + \eta\)</span>.</p>
+</div>
+<div class="align-center figure">
+<img alt="alternate text" src="_images/s-coor.png" />
+</div>
+<p>To get <span class="math notranslate nohighlight">\(\frac{\partial s}{\partial x^*}\)</span>,  <span class="math notranslate nohighlight">\(\frac{\partial s}{\partial y^*}\)</span>, <span class="math notranslate nohighlight">\(\frac{\partial s}{\partial z^*}\)</span>, and <span class="math notranslate nohighlight">\(\frac{\partial s}{\partial t^*}\)</span> needed by the momentum equations and the pressure Poisson equation, we introduce <span class="math notranslate nohighlight">\(z_s\)</span> function which describes <span class="math notranslate nohighlight">\(z\)</span>-location in the s-coordinate system <span class="math notranslate nohighlight">\(z_s(x,y,s,t)\)</span>,</p>
+<p>The derivatives of <span class="math notranslate nohighlight">\(s\)</span> with respect to <span class="math notranslate nohighlight">\((x^*,y^*,z^*,t^*)\)</span> can be derived as, for example,</p>
+<div class="math notranslate nohighlight">
+\[\frac{\partial z_s}{\partial x^*} = \frac{\partial z_s}{\partial x} + \frac{\partial z_s}{\partial s} \frac{\partial s}{\partial x^*} = 0\]</div>
+<p>or</p>
+<div class="math notranslate nohighlight">
+\[\frac{\partial s}{\partial x^*} = - \frac{\partial z_s}{\partial x} / \frac{\partial z_s}{\partial s}\]</div>
+<p>Similarly,</p>
+<div class="math notranslate nohighlight">
+\[\frac{\partial s}{\partial y^*} = - \frac{\partial z_s}{\partial y} / \frac{\partial z_s}{\partial s}\]</div>
+<p>and</p>
+<div class="math notranslate nohighlight">
+\[\frac{\partial s}{\partial t^*} = - \frac{\partial z_s}{\partial t} / \frac{\partial z_s}{\partial s}\]</div>
+<p>The discretized forms are</p>
+<div class="math notranslate nohighlight" id="equation-sx">
+<span class="eqno">(8)<a class="headerlink" href="#equation-sx" title="Permalink to this equation">¶</a></span>\[\frac{\partial s}{\partial x^*} = - \frac{\frac{\Delta z_s}{\Delta x}|_{s}} {\frac{\Delta z_s}{\Delta s}}\]</div>
+<div class="math notranslate nohighlight" id="equation-sy">
+<span class="eqno">(9)<a class="headerlink" href="#equation-sy" title="Permalink to this equation">¶</a></span>\[\frac{\partial s}{\partial y^*} = - \frac{\frac{\Delta z_s}{\Delta y}|_{s}} {\frac{\Delta z_s}{\Delta s}}\]</div>
+<div class="math notranslate nohighlight" id="equation-sz">
+<span class="eqno">(10)<a class="headerlink" href="#equation-sz" title="Permalink to this equation">¶</a></span>\[\frac{\partial s}{\partial z^*} = \frac{1}{\frac{\Delta z_s}{\Delta s}}\]</div>
+<div class="math notranslate nohighlight" id="equation-st">
+<span class="eqno">(11)<a class="headerlink" href="#equation-st" title="Permalink to this equation">¶</a></span>\[\frac{\partial s}{\partial t^*} = - \frac{\frac{\Delta z_s}{\Delta t}|_{s}} {\frac{\Delta z_s}{\Delta s}}\]</div>
+<p>for given <span class="math notranslate nohighlight">\(z_s(x,y,s,t)\)</span>. <span class="math notranslate nohighlight">\(|_s\)</span> is used to emphasize the derivatives are calculated with constant <span class="math notranslate nohighlight">\(s\)</span>. See <a class="reference internal" href="method_coordinate_implementation.html#implement-s-coor"><span class="std std-ref">Implementation of s-coordinate</span></a> for detailed implementation.</p>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">NHWAVE WIKI</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="code.html">Git repository</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="method.html">Method</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="method_coordinate.html">S-coordinate System</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">New s-Coordinate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="method_coordinate_implementation.html">Implementation of s-coordinate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="method_coordinate_input.html">Model input for s-coordinate</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="method_ibm.html">IBM Module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="method.html">Method</a><ul>
+  <li><a href="method_coordinate.html">S-coordinate System</a><ul>
+      <li>Previous: <a href="method_coordinate.html" title="previous chapter">S-coordinate System</a></li>
+      <li>Next: <a href="method_coordinate_implementation.html" title="next chapter">Implementation of s-coordinate</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, Fengyan Shi.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/method_coordinate_theory.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
